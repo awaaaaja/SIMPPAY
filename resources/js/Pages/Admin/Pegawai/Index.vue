@@ -1,8 +1,19 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useRoutePrefix } from '@/composables/useRoutePrefix.js';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import {
+    AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+    AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Eye, Trash2, Plus } from '@lucide/vue';
 
 const prefix = useRoutePrefix();
 
@@ -34,168 +45,182 @@ function applyFilter() {
     });
 }
 
-function destroy(id) {
-    if (confirm('Yakin ingin menghapus pegawai ini? Data yang dihapus tidak dapat dikembalikan.')) {
-        router.delete(route(`${prefix.value}.pegawai.destroy`, id));
-    }
+function doDelete(id) {
+    router.delete(route(`${prefix.value}.pegawai.destroy`, id));
 }
 
-const statusColors = {
-    aktif: 'bg-green-100 text-green-800',
-    nonaktif: 'bg-red-100 text-red-800',
-    pensiun: 'bg-yellow-100 text-yellow-800',
-};
+function statusVariant(status) {
+    const map = { aktif: 'default', nonaktif: 'destructive', pensiun: 'outline' };
+    return map[status] || 'outline';
+}
 </script>
 
 <template>
     <Head title="Data Pegawai" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div class="flex items-center justify-between">
+        <div class="px-4 pt-6 pb-2 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="flex items-center justify-between mb-6">
                 <div>
-                    <h2 class="text-xl font-semibold leading-tight text-gray-800">Pegawai</h2>
-                    <p class="mt-1 text-sm text-gray-500">{{ pegawais.total }} employees</p>
+                    <h1 class="text-2xl font-semibold text-gray-800">Pegawai</h1>
+                    <p class="mt-1 text-sm text-muted-foreground">{{ pegawais.total }} data</p>
                 </div>
-                <Link
-                    v-if="can.create"
-                    :href="route(`${prefix}.pegawai.create`)"
-                    class="inline-flex items-center rounded-md bg-[#025AB1] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#014A96]"
-                >
-                    Tambah Pegawai
-                </Link>
+                <Button v-if="can.create" as-child>
+                    <Link :href="route(`${prefix}.pegawai.create`)">
+                        <Plus class="h-4 w-4" /> Tambah Pegawai
+                    </Link>
+                </Button>
             </div>
-        </template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <!-- Filter bar -->
-                <div class="mb-6 flex flex-wrap items-end gap-3">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Search</label>
-                        <input
-                            v-model="search"
-                            @keyup.enter="applyFilter"
-                            type="text"
-                            placeholder="Nama atau NIK..."
-                            class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]"
-                        />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Jabatan</label>
-                        <select v-model="jabatan_id" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
-                            <option value="">Semua</option>
-                            <option v-for="j in jabatans" :key="j.id" :value="j.id">{{ j.nama_jabatan }}</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Status</label>
-                        <select v-model="status_pegawai" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
-                            <option value="">Semua</option>
-                            <option value="aktif">Aktif</option>
-                            <option value="nonaktif">Nonaktif</option>
-                            <option value="pensiun">Pensiun</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Struktural</label>
-                        <select v-model="struktural_id" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
-                            <option value="">Semua</option>
-                            <option v-for="s in strukturals" :key="s.id" :value="s.id">{{ s.nama_struktural }}</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Fungsional</label>
-                        <select v-model="fungsional_id" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
-                            <option value="">Semua</option>
-                            <option v-for="f in fungsionals" :key="f.id" :value="f.id">{{ f.nama_fungsional }}</option>
-                        </select>
-                    </div>
+            <!-- Filter bar -->
+            <div class="mb-6 flex flex-wrap items-end gap-3">
+                <div class="space-y-1">
+                    <Label>Search</Label>
+                    <Input v-model="search" @keyup.enter="applyFilter" placeholder="Nama atau NIK..." class="w-48" />
                 </div>
+                <div class="space-y-1">
+                    <Label>Jabatan</Label>
+                    <Select v-model="jabatan_id" @update:model-value="applyFilter">
+                        <SelectTrigger class="w-44">
+                            <SelectValue placeholder="Semua" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="">Semua</SelectItem>
+                            <SelectItem v-for="j in jabatans" :key="j.id" :value="String(j.id)">
+                                {{ j.nama_jabatan }}
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div class="space-y-1">
+                    <Label>Status</Label>
+                    <Select v-model="status_pegawai" @update:model-value="applyFilter">
+                        <SelectTrigger class="w-36">
+                            <SelectValue placeholder="Semua" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="">Semua</SelectItem>
+                            <SelectItem value="aktif">Aktif</SelectItem>
+                            <SelectItem value="nonaktif">Nonaktif</SelectItem>
+                            <SelectItem value="pensiun">Pensiun</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div class="space-y-1">
+                    <Label>Struktural</Label>
+                    <Select v-model="struktural_id" @update:model-value="applyFilter">
+                        <SelectTrigger class="w-44">
+                            <SelectValue placeholder="Semua" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="">Semua</SelectItem>
+                            <SelectItem v-for="s in strukturals" :key="s.id" :value="String(s.id)">
+                                {{ s.nama_struktural }}
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                <div class="space-y-1">
+                    <Label>Fungsional</Label>
+                    <Select v-model="fungsional_id" @update:model-value="applyFilter">
+                        <SelectTrigger class="w-44">
+                            <SelectValue placeholder="Semua" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="">Semua</SelectItem>
+                            <SelectItem v-for="f in fungsionals" :key="f.id" :value="String(f.id)">
+                                {{ f.nama_fungsional }}
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
 
-                <!-- Table -->
-                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">No</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Nama</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">NIK</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Jabatan</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Struktural</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Fungsional</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 bg-white">
-                            <tr v-for="(pegawai, index) in pegawais.data" :key="pegawai.id" class="cursor-pointer hover:bg-[#F8FAF8]">
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                    {{ (pegawais.current_page - 1) * pegawais.per_page + index + 1 }}
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-left">
-                                    <Link :href="route(`${prefix}.pegawai.show`, pegawai.id)" class="text-sm font-medium text-gray-900 hover:text-[#025AB1]">
-                                        {{ pegawai.nama_pegawai }}
-                                    </Link>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">{{ pegawai.nik }}</td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                    {{ pegawai.jabatan?.nama_jabatan ?? '-' }}
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-center">
-                                    <span
-                                        class="inline-flex rounded-full px-2 text-xs font-semibold leading-5"
-                                        :class="statusColors[pegawai.status_pegawai]"
-                                    >
-                                        {{ pegawai.status_pegawai }}
-                                    </span>
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                    {{ pegawai.struktural?.nama_struktural ?? '-' }}
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                    {{ pegawai.fungsional?.nama_fungsional ?? '-' }}
-                                </td>
-                                <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
-                                    <Link
-                                        :href="route(`${prefix}.pegawai.show`, pegawai.id)"
-                                        class="mr-3 text-[#025AB1] hover:underline"
-                                    >
-                                        Lihat
-                                    </Link>
-                                    <button
-                                        v-if="can.delete"
-                                        @click.stop="destroy(pegawai.id)"
-                                        class="text-red-600 hover:underline"
-                                    >
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr v-if="pegawais.data.length === 0">
-                                <td colspan="8" class="px-6 py-12 text-center text-sm text-gray-500">
-                                    Belum ada data pegawai.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <!-- Table -->
+            <div class="bg-white rounded-[12px] overflow-hidden"
+                style="box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead class="w-12">No</TableHead>
+                            <TableHead>Nama</TableHead>
+                            <TableHead>NIK</TableHead>
+                            <TableHead>Jabatan</TableHead>
+                            <TableHead class="text-center">Status</TableHead>
+                            <TableHead>Struktural</TableHead>
+                            <TableHead>Fungsional</TableHead>
+                            <TableHead class="text-right">Aksi</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow v-for="(pegawai, index) in pegawais.data" :key="pegawai.id">
+                            <TableCell class="text-muted-foreground">
+                                {{ (pegawais.current_page - 1) * pegawais.per_page + index + 1 }}
+                            </TableCell>
+                            <TableCell>
+                                <Link :href="route(`${prefix}.pegawai.show`, pegawai.id)" class="font-medium text-foreground hover:text-primary">
+                                    {{ pegawai.nama_pegawai }}
+                                </Link>
+                            </TableCell>
+                            <TableCell class="text-muted-foreground">{{ pegawai.nik }}</TableCell>
+                            <TableCell class="text-muted-foreground">{{ pegawai.jabatan?.nama_jabatan ?? '-' }}</TableCell>
+                            <TableCell class="text-center">
+                                <Badge :variant="statusVariant(pegawai.status_pegawai)" class="capitalize">
+                                    {{ pegawai.status_pegawai }}
+                                </Badge>
+                            </TableCell>
+                            <TableCell class="text-muted-foreground">{{ pegawai.struktural?.nama_struktural ?? '-' }}</TableCell>
+                            <TableCell class="text-muted-foreground">{{ pegawai.fungsional?.nama_fungsional ?? '-' }}</TableCell>
+                            <TableCell class="text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <Button variant="ghost" size="icon-sm" as-child>
+                                        <Link :href="route(`${prefix}.pegawai.show`, pegawai.id)">
+                                            <Eye class="h-3.5 w-3.5" />
+                                        </Link>
+                                    </Button>
+                                    <AlertDialog v-if="can.delete">
+                                        <AlertDialogTrigger as-child>
+                                            <Button variant="destructive" size="icon-sm">
+                                                <Trash2 class="h-3.5 w-3.5" />
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Hapus Pegawai</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    Yakin ingin menghapus "{{ pegawai.nama_pegawai }}"? Data yang dihapus tidak dapat dikembalikan.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Batal</AlertDialogCancel>
+                                                <AlertDialogAction @click="doDelete(pegawai.id)">Hapus</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow v-if="pegawais.data.length === 0">
+                            <TableCell colspan="8" class="text-center py-12 text-muted-foreground">
+                                Belum ada data pegawai.
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </div>
 
-                <!-- Pagination -->
-                <div v-if="pegawais.last_page > 1" class="mt-4 flex justify-center">
-                    <nav class="flex items-center gap-1">
-                        <template v-for="link in pegawais.links" :key="link.url">
-                            <span v-if="!link.url" class="px-3 py-2 text-sm text-gray-400">...</span>
-                            <Link
-                                v-else
-                                :href="link.url"
-                                class="rounded-md px-3 py-2 text-sm"
-                                :class="link.active ? 'bg-[#025AB1] text-white' : 'text-gray-700 hover:bg-gray-100'"
-                                v-html="link.label"
-                            />
-                        </template>
-                    </nav>
-                </div>
+            <!-- Pagination -->
+            <div v-if="pegawais.last_page > 1" class="mt-4 flex justify-center">
+                <nav class="flex items-center gap-1">
+                    <template v-for="link in pegawais.links" :key="link.url">
+                        <span v-if="!link.url" class="px-3 py-2 text-sm text-gray-400">...</span>
+                        <Button v-else variant="ghost" size="sm"
+                            :class="link.active ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''"
+                            as-child>
+                            <Link :href="link.url" v-html="link.label" />
+                        </Button>
+                    </template>
+                </nav>
             </div>
         </div>
     </AuthenticatedLayout>
