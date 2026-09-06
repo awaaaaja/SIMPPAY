@@ -4,8 +4,6 @@ import { Head } from '@inertiajs/vue3';
 import { onMounted, ref } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import { Wallet, Briefcase, TrendingUp } from '@lucide/vue';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 
 Chart.register(...registerables);
 
@@ -40,18 +38,21 @@ function getGreeting() {
 onMounted(() => {
     if (!chartRef.value || !props.payrollHistory?.length) return;
 
+    const labels = props.payrollHistory.map(h => formatPeriode(h.periode));
+    const data = props.payrollHistory.map(h => Number(h.total_gaji));
+
     new Chart(chartRef.value, {
         type: 'line',
         data: {
-            labels: props.payrollHistory.map(h => formatPeriode(h.periode)),
+            labels,
             datasets: [{
                 label: 'Take Home Pay',
-                data: props.payrollHistory.map(h => Number(h.total_gaji)),
-                borderColor: 'oklch(0.4752 0.1562 255.17)',
-                backgroundColor: 'oklch(0.4752 0.1562 255.17 / 0.08)',
+                data,
+                borderColor: '#025AB1',
+                backgroundColor: 'rgba(23, 107, 91, 0.08)',
                 fill: true,
                 tension: 0.3,
-                pointBackgroundColor: 'oklch(0.4752 0.1562 255.17)',
+                pointBackgroundColor: '#025AB1',
                 pointRadius: 4,
                 pointHoverRadius: 6,
             }],
@@ -89,81 +90,83 @@ onMounted(() => {
 
     <PortalLayout>
         <div class="px-4 py-8 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-            <!-- Greeting -->
+            <!-- Greeting — §32 -->
             <div class="mb-8">
-                <p class="text-sm text-muted-foreground">{{ getGreeting() }},</p>
-                <h1 class="text-2xl font-semibold text-foreground">{{ pegawai?.nama_pegawai }}</h1>
-                <p class="text-sm text-muted-foreground mt-0.5">{{ pegawai?.jabatan?.nama_jabatan || '-' }}</p>
+                <p class="text-sm text-gray-500">{{ getGreeting() }},</p>
+                <h1 class="text-2xl font-semibold text-gray-800">{{ pegawai?.nama_pegawai }}</h1>
+                <p class="text-sm text-gray-500 mt-0.5">{{ pegawai?.jabatan?.nama_jabatan || '-' }}</p>
             </div>
 
-            <!-- Cards row -->
+            <!-- Cards row — §33 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <!-- Latest Salary -->
-                <div class="bg-white rounded-[16px] p-5"
-                    style="box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);">
+                <div class="bg-white rounded-[16px] shadow-[0_1px_2px_rgba(0,0,0,.04),0_8px_24px_rgba(0,0,0,.04)] p-5">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary/10">
-                            <Wallet class="h-4.5 w-4.5 text-primary" :stroke-width="1.75" />
+                        <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#025AB1]/10">
+                            <Wallet class="h-4.5 w-4.5 text-[#025AB1]" :stroke-width="1.75" />
                         </div>
-                        <p class="text-xs font-medium text-muted-foreground">Take Home Pay</p>
+                        <p class="text-xs font-medium text-gray-500">Take Home Pay</p>
                     </div>
-                    <p v-if="showNominal" class="text-xl font-semibold text-foreground tabular-nums">
+                    <p v-if="showNominal" class="text-xl font-semibold text-gray-800 tabular-nums">
                         {{ formatRupiah(latestSlip?.total_gaji) }}
                     </p>
-                    <p v-else class="text-xl font-semibold text-foreground">Rp ****</p>
+                    <p v-else class="text-xl font-semibold text-gray-800">Rp ****</p>
                     <div class="flex items-center gap-2 mt-1">
-                        <p class="text-xs text-muted-foreground">{{ formatPeriode(latestSlip?.periode) }}</p>
-                        <Badge v-if="latestSlip" variant="default" class="text-[10px] px-1.5 py-0">Finalized</Badge>
+                        <p class="text-xs text-gray-500">{{ formatPeriode(latestSlip?.periode) }}</p>
+                        <span v-if="latestSlip" class="inline-flex items-center rounded-full bg-[#025AB1]/10 px-2 py-0.5 text-[10px] font-medium text-[#025AB1]">
+                            Finalized
+                        </span>
                     </div>
-                    <Button variant="ghost" size="sm" class="mt-3 h-auto p-0 text-xs" @click="showNominal = !showNominal">
+                    <button
+                        @click="showNominal = !showNominal"
+                        class="mt-3 text-xs text-[#025AB1] hover:underline"
+                    >
                         {{ showNominal ? 'Sembunyikan nominal' : 'Tampilkan nominal' }}
-                    </Button>
+                    </button>
                 </div>
 
                 <!-- Employment Info -->
-                <div class="bg-white rounded-[16px] p-5"
-                    style="box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);">
+                <div class="bg-white rounded-[16px] shadow-[0_1px_2px_rgba(0,0,0,.04),0_8px_24px_rgba(0,0,0,.04)] p-5">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary/10">
-                            <Briefcase class="h-4.5 w-4.5 text-primary" :stroke-width="1.75" />
+                        <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#025AB1]/10">
+                            <Briefcase class="h-4.5 w-4.5 text-[#025AB1]" :stroke-width="1.75" />
                         </div>
-                        <p class="text-xs font-medium text-muted-foreground">Informasi Kepegawaian</p>
+                        <p class="text-xs font-medium text-gray-500">Informasi Kepegawaian</p>
                     </div>
                     <dl class="space-y-2">
                         <div class="flex justify-between">
-                            <dt class="text-xs text-muted-foreground">Jabatan</dt>
-                            <dd class="text-xs font-medium text-foreground">{{ pegawai?.jabatan?.nama_jabatan || '-' }}</dd>
+                            <dt class="text-xs text-gray-500">Jabatan</dt>
+                            <dd class="text-xs font-medium text-gray-800">{{ pegawai?.jabatan?.nama_jabatan || '-' }}</dd>
                         </div>
                         <div class="flex justify-between">
-                            <dt class="text-xs text-muted-foreground">Status</dt>
-                            <dd class="text-xs font-medium text-foreground capitalize">{{ pegawai?.status_pegawai || '-' }}</dd>
+                            <dt class="text-xs text-gray-500">Status</dt>
+                            <dd class="text-xs font-medium text-gray-800 capitalize">{{ pegawai?.status_pegawai || '-' }}</dd>
                         </div>
                         <div class="flex justify-between">
-                            <dt class="text-xs text-muted-foreground">NIK</dt>
-                            <dd class="text-xs font-medium text-foreground">{{ pegawai?.nik || '-' }}</dd>
+                            <dt class="text-xs text-gray-500">NIK</dt>
+                            <dd class="text-xs font-medium text-gray-800">{{ pegawai?.nik || '-' }}</dd>
                         </div>
                         <div v-if="pegawai?.struktural?.nama_struktural" class="flex justify-between">
-                            <dt class="text-xs text-muted-foreground">Struktural</dt>
-                            <dd class="text-xs font-medium text-foreground">{{ pegawai.struktural.nama_struktural }}</dd>
+                            <dt class="text-xs text-gray-500">Struktural</dt>
+                            <dd class="text-xs font-medium text-gray-800">{{ pegawai.struktural.nama_struktural }}</dd>
                         </div>
                     </dl>
                 </div>
             </div>
 
-            <!-- Salary History Chart -->
-            <div class="bg-white rounded-[16px] p-5"
-                style="box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);">
+            <!-- Salary History Chart — §33, 6-month chart -->
+            <div class="bg-white rounded-[16px] shadow-[0_1px_2px_rgba(0,0,0,.04),0_8px_24px_rgba(0,0,0,.04)] p-5">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary/10">
-                        <TrendingUp class="h-4.5 w-4.5 text-primary" :stroke-width="1.75" />
+                    <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#025AB1]/10">
+                        <TrendingUp class="h-4.5 w-4.5 text-[#025AB1]" :stroke-width="1.75" />
                     </div>
-                    <p class="text-xs font-medium text-muted-foreground">Riwayat Gaji 6 Bulan Terakhir</p>
+                    <p class="text-xs font-medium text-gray-500">Riwayat Gaji 6 Bulan Terakhir</p>
                 </div>
                 <div v-if="payrollHistory?.length" class="h-64">
                     <canvas ref="chartRef" />
                 </div>
                 <div v-else class="h-64 flex items-center justify-center">
-                    <p class="text-sm text-muted-foreground">Belum ada data riwayat gaji</p>
+                    <p class="text-sm text-gray-400">Belum ada data riwayat gaji</p>
                 </div>
             </div>
         </div>
