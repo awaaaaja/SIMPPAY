@@ -48,11 +48,11 @@ onMounted(() => {
             datasets: [{
                 label: 'Take Home Pay',
                 data,
-                borderColor: '#176B5B',
+                borderColor: '#D40C14',
                 backgroundColor: 'rgba(23, 107, 91, 0.08)',
                 fill: true,
                 tension: 0.3,
-                pointBackgroundColor: '#176B5B',
+                pointBackgroundColor: '#D40C14',
                 pointRadius: 4,
                 pointHoverRadius: 6,
             }],
@@ -102,8 +102,8 @@ onMounted(() => {
                 <!-- Latest Salary -->
                 <div class="bg-white rounded-[16px] shadow-[0_1px_2px_rgba(0,0,0,.04),0_8px_24px_rgba(0,0,0,.04)] p-5">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#176B5B]/10">
-                            <Wallet class="h-4.5 w-4.5 text-[#176B5B]" :stroke-width="1.75" />
+                        <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#D40C14]/10">
+                            <Wallet class="h-4.5 w-4.5 text-[#D40C14]" :stroke-width="1.75" />
                         </div>
                         <p class="text-xs font-medium text-gray-500">Take Home Pay</p>
                     </div>
@@ -113,13 +113,13 @@ onMounted(() => {
                     <p v-else class="text-xl font-semibold text-gray-800">Rp ****</p>
                     <div class="flex items-center gap-2 mt-1">
                         <p class="text-xs text-gray-500">{{ formatPeriode(latestSlip?.periode) }}</p>
-                        <span v-if="latestSlip" class="inline-flex items-center rounded-full bg-[#176B5B]/10 px-2 py-0.5 text-[10px] font-medium text-[#176B5B]">
+                        <span v-if="latestSlip" class="inline-flex items-center rounded-full bg-[#D40C14]/10 px-2 py-0.5 text-[10px] font-medium text-[#D40C14]">
                             Finalized
                         </span>
                     </div>
                     <button
                         @click="showNominal = !showNominal"
-                        class="mt-3 text-xs text-[#176B5B] hover:underline"
+                        class="mt-3 text-xs text-[#D40C14] hover:underline"
                     >
                         {{ showNominal ? 'Sembunyikan nominal' : 'Tampilkan nominal' }}
                     </button>
@@ -128,8 +128,8 @@ onMounted(() => {
                 <!-- Employment Info -->
                 <div class="bg-white rounded-[16px] shadow-[0_1px_2px_rgba(0,0,0,.04),0_8px_24px_rgba(0,0,0,.04)] p-5">
                     <div class="flex items-center gap-3 mb-3">
-                        <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#176B5B]/10">
-                            <Briefcase class="h-4.5 w-4.5 text-[#176B5B]" :stroke-width="1.75" />
+                        <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#D40C14]/10">
+                            <Briefcase class="h-4.5 w-4.5 text-[#D40C14]" :stroke-width="1.75" />
                         </div>
                         <p class="text-xs font-medium text-gray-500">Informasi Kepegawaian</p>
                     </div>
@@ -157,8 +157,8 @@ onMounted(() => {
             <!-- Salary History Chart — §33, 6-month chart -->
             <div class="bg-white rounded-[16px] shadow-[0_1px_2px_rgba(0,0,0,.04),0_8px_24px_rgba(0,0,0,.04)] p-5">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#176B5B]/10">
-                        <TrendingUp class="h-4.5 w-4.5 text-[#176B5B]" :stroke-width="1.75" />
+                    <div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#D40C14]/10">
+                        <TrendingUp class="h-4.5 w-4.5 text-[#D40C14]" :stroke-width="1.75" />
                     </div>
                     <p class="text-xs font-medium text-gray-500">Riwayat Gaji 6 Bulan Terakhir</p>
                 </div>

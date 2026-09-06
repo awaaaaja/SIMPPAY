@@ -38,7 +38,7 @@ function destroy(id) {
                 <Link
                     v-if="can.create"
                     :href="route(`${prefix}.fungsional.create`)"
-                    class="inline-flex items-center rounded-md bg-[#176B5B] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#145a4c]"
+                    class="inline-flex items-center rounded-md bg-[#D40C14] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#A30A10]"
                 >
                     Tambah Fungsional
                 </Link>
@@ -53,7 +53,7 @@ function destroy(id) {
                         @keyup.enter="applyFilter"
                         type="text"
                         placeholder="Cari nama fungsional..."
-                        class="rounded-md border-gray-300 shadow-sm focus:border-[#176B5B] focus:ring-[#176B5B]"
+                        class="rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"
                     />
                 </div>
 
@@ -94,7 +94,7 @@ function destroy(id) {
                                     <Link
                                         v-if="can.update"
                                         :href="route(`${prefix}.fungsional.edit`, fungsional.id)"
-                                        class="mr-3 text-[#176B5B] hover:underline"
+                                        class="mr-3 text-[#D40C14] hover:underline"
                                     >
                                         Edit
                                     </Link>
@@ -124,7 +124,7 @@ function destroy(id) {
                                 v-else
                                 :href="link.url"
                                 class="rounded-md px-3 py-2 text-sm"
-                                :class="link.active ? 'bg-[#176B5B] text-white' : 'text-gray-700 hover:bg-gray-100'"
+                                :class="link.active ? 'bg-[#D40C14] text-white' : 'text-gray-700 hover:bg-gray-100'"
                                 v-html="link.label"
                             />
                         </template>

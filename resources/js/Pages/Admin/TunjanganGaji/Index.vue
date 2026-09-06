@@ -104,7 +104,7 @@ function targetLabel(item) {
             <div class="flex items-center justify-between">
                 <h2 class="font-semibold text-lg text-gray-800 leading-tight">Tunjangan Gaji</h2>
                 <button v-if="can.create" @click="openCreate"
-                    class="inline-flex items-center px-4 py-2 bg-[#176B5B] text-white text-sm font-medium rounded-[10px] hover:bg-[#145a4c] transition-colors">
+                    class="inline-flex items-center px-4 py-2 bg-[#D40C14] text-white text-sm font-medium rounded-[10px] hover:bg-[#A30A10] transition-colors">
                     <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     Tambah Tunjangan
                 </button>
@@ -116,7 +116,7 @@ function targetLabel(item) {
                 <!-- Filter -->
                 <div class="mb-4 flex items-center gap-3">
                     <select v-model="targetTipe" @change="applyFilter"
-                        class="rounded-[10px] border-gray-300 text-sm focus:border-[#176B5B] focus:ring-[#176B5B]">
+                        class="rounded-[10px] border-gray-300 text-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
                         <option value="">Semua Target</option>
                         <option value="semua">Semua Pegawai</option>
                         <option value="jabatan">Per Jabatan</option>
@@ -145,14 +145,14 @@ function targetLabel(item) {
                                 <td class="px-6 py-4 text-center">
                                     <button @click="toggleAktif(t.id)"
                                         class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors"
-                                        :class="t.aktif ? 'bg-[#176B5B]' : 'bg-gray-300'">
+                                        :class="t.aktif ? 'bg-[#D40C14]' : 'bg-gray-300'">
                                         <span class="inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform"
                                             :class="t.aktif ? 'translate-x-[18px]' : 'translate-x-[3px]'" />
                                     </button>
                                 </td>
                                 <td class="px-6 py-4 text-right space-x-2">
                                     <button v-if="can.update" @click="openEdit(t)"
-                                        class="text-[#176B5B] hover:text-[#145a4c] text-sm font-medium">
+                                        class="text-[#D40C14] hover:text-[#A30A10] text-sm font-medium">
                                         Edit
                                     </button>
                                     <button v-if="can.delete" @click="destroy(t.id)"
@@ -178,7 +178,7 @@ function targetLabel(item) {
                                 @click="link.url && router.get(link.url, {}, { preserveState: true, replace: true })"
                                 :disabled="!link.url"
                                 class="px-3 py-1 text-sm rounded-[10px] transition-colors"
-                                :class="link.active ? 'bg-[#176B5B] text-white' : 'text-gray-600 hover:bg-gray-100'"
+                                :class="link.active ? 'bg-[#D40C14] text-white' : 'text-gray-600 hover:bg-gray-100'"
                                 v-html="link.label" />
                         </div>
                     </div>
@@ -198,13 +198,13 @@ function targetLabel(item) {
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nama Tunjangan</label>
                             <input v-model="createForm.nama_tunjangan" type="text"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#176B5B] focus:ring-[#176B5B] text-sm" />
+                                class="w-full rounded-[10px] border-gray-300 focus:border-[#D40C14] focus:ring-[#D40C14] text-sm" />
                             <p v-if="createForm.errors.nama_tunjangan" class="text-red-500 text-xs mt-1">{{ createForm.errors.nama_tunjangan }}</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Target</label>
                             <select v-model="createForm.target_tipe"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#176B5B] focus:ring-[#176B5B] text-sm">
+                                class="w-full rounded-[10px] border-gray-300 focus:border-[#D40C14] focus:ring-[#D40C14] text-sm">
                                 <option value="semua">Semua Pegawai</option>
                                 <option value="jabatan">Per Jabatan</option>
                                 <option value="pegawai">Per Pegawai</option>
@@ -213,7 +213,7 @@ function targetLabel(item) {
                         <div v-if="createForm.target_tipe === 'jabatan'">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
                             <select v-model="createForm.jabatan_id"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#176B5B] focus:ring-[#176B5B] text-sm">
+                                class="w-full rounded-[10px] border-gray-300 focus:border-[#D40C14] focus:ring-[#D40C14] text-sm">
                                 <option value="">Pilih Jabatan</option>
                                 <option v-for="j in jabatans" :key="j.id" :value="j.id">{{ j.nama_jabatan }}</option>
                             </select>
@@ -222,7 +222,7 @@ function targetLabel(item) {
                         <div v-if="createForm.target_tipe === 'pegawai'">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Pegawai</label>
                             <select v-model="createForm.pegawai_id"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#176B5B] focus:ring-[#176B5B] text-sm">
+                                class="w-full rounded-[10px] border-gray-300 focus:border-[#D40C14] focus:ring-[#D40C14] text-sm">
                                 <option value="">Pilih Pegawai</option>
                                 <option v-for="p in pegawais" :key="p.id" :value="p.id">{{ p.nama_pegawai }} ({{ p.nik }})</option>
                             </select>
@@ -231,12 +231,12 @@ function targetLabel(item) {
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nominal (Rp)</label>
                             <input v-model.number="createForm.nominal" type="number" step="0.01" min="0"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#176B5B] focus:ring-[#176B5B] text-sm" />
+                                class="w-full rounded-[10px] border-gray-300 focus:border-[#D40C14] focus:ring-[#D40C14] text-sm" />
                             <p v-if="createForm.errors.nominal" class="text-red-500 text-xs mt-1">{{ createForm.errors.nominal }}</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <input v-model="createForm.aktif" type="checkbox" id="aktif"
-                                class="rounded border-gray-300 text-[#176B5B] focus:ring-[#176B5B]" />
+                                class="rounded border-gray-300 text-[#D40C14] focus:ring-[#D40C14]" />
                             <label for="aktif" class="text-sm text-gray-700">Aktif</label>
                         </div>
                         <div class="flex justify-end gap-3 pt-2">
@@ -245,7 +245,7 @@ function targetLabel(item) {
                                 Batal
                             </button>
                             <button type="submit" :disabled="createForm.processing"
-                                class="px-4 py-2 text-sm font-medium text-white bg-[#176B5B] rounded-[10px] hover:bg-[#145a4c] transition-colors disabled:opacity-50">
+                                class="px-4 py-2 text-sm font-medium text-white bg-[#D40C14] rounded-[10px] hover:bg-[#A30A10] transition-colors disabled:opacity-50">
                                 {{ createForm.processing ? 'Menyimpan...' : 'Simpan' }}
                             </button>
                         </div>

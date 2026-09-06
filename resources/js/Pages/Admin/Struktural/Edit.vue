@@ -53,7 +53,7 @@ function submit() {
 
                         <div>
                             <InputLabel for="status" value="Status" />
-                            <select id="status" v-model="form.status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#176B5B] focus:ring-[#176B5B]">
+                            <select id="status" v-model="form.status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
                                 <option value="aktif">Aktif</option>
                                 <option value="nonaktif">Nonaktif</option>
                             </select>

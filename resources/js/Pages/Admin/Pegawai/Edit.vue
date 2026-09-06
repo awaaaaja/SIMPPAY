@@ -92,7 +92,7 @@ function submit() {
                             </div>
                             <div>
                                 <InputLabel for="jenis_kelamin" value="Jenis Kelamin" />
-                                <select id="jenis_kelamin" v-model="form.jenis_kelamin" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#176B5B] focus:ring-[#176B5B]">
+                                <select id="jenis_kelamin" v-model="form.jenis_kelamin" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
                                     <option value="L">Laki-laki</option>
                                     <option value="P">Perempuan</option>
                                 </select>
@@ -115,7 +115,7 @@ function submit() {
                             </div>
                             <div class="col-span-2">
                                 <InputLabel for="alamat" value="Alamat" />
-                                <textarea id="alamat" v-model="form.alamat" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#176B5B] focus:ring-[#176B5B]"></textarea>
+                                <textarea id="alamat" v-model="form.alamat" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"></textarea>
                                 <InputError :message="form.errors.alamat" class="mt-2" />
                             </div>
                         </div>
@@ -125,7 +125,7 @@ function submit() {
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <InputLabel for="jabatan_id" value="Jabatan" />
-                                <select id="jabatan_id" v-model="form.jabatan_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#176B5B] focus:ring-[#176B5B]">
+                                <select id="jabatan_id" v-model="form.jabatan_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
                                     <option value="">-- Pilih --</option>
                                     <option v-for="j in jabatans" :key="j.id" :value="j.id">{{ j.nama_jabatan }}</option>
                                 </select>
@@ -133,7 +133,7 @@ function submit() {
                             </div>
                             <div>
                                 <InputLabel for="struktural_id" value="Struktural" />
-                                <select id="struktural_id" v-model="form.struktural_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#176B5B] focus:ring-[#176B5B]">
+                                <select id="struktural_id" v-model="form.struktural_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
                                     <option value="">-- Pilih --</option>
                                     <option v-for="s in strukturals" :key="s.id" :value="s.id">{{ s.nama_struktural }}</option>
                                 </select>
@@ -141,7 +141,7 @@ function submit() {
                             </div>
                             <div>
                                 <InputLabel for="fungsional_id" value="Fungsional" />
-                                <select id="fungsional_id" v-model="form.fungsional_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#176B5B] focus:ring-[#176B5B]">
+                                <select id="fungsional_id" v-model="form.fungsional_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
                                     <option value="">-- Pilih --</option>
                                     <option v-for="f in fungsionals" :key="f.id" :value="f.id">{{ f.nama_fungsional }}</option>
                                 </select>
@@ -154,7 +154,7 @@ function submit() {
                             </div>
                             <div>
                                 <InputLabel for="status_pegawai" value="Status" />
-                                <select id="status_pegawai" v-model="form.status_pegawai" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#176B5B] focus:ring-[#176B5B]">
+                                <select id="status_pegawai" v-model="form.status_pegawai" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
                                     <option value="aktif">Aktif</option>
                                     <option value="nonaktif">Nonaktif</option>
                                     <option value="pensiun">Pensiun</option>
@@ -168,7 +168,7 @@ function submit() {
                             </div>
                             <div>
                                 <InputLabel for="status_dosen" value="Status Dosen" />
-                                <select id="status_dosen" v-model="form.status_dosen" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#176B5B] focus:ring-[#176B5B]">
+                                <select id="status_dosen" v-model="form.status_dosen" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
                                     <option value="">-- Pilih --</option>
                                     <option value="dosen">Dosen</option>
                                     <option value="bukan_dosen">Bukan Dosen</option>
@@ -202,7 +202,7 @@ function submit() {
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <InputLabel for="status_kawin" value="Status Kawin" />
-                                <select id="status_kawin" v-model="form.status_kawin" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#176B5B] focus:ring-[#176B5B]">
+                                <select id="status_kawin" v-model="form.status_kawin" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
                                     <option value="">-- Pilih --</option>
                                     <option value="belum_kawin">Belum Kawin</option>
                                     <option value="kawin">Kawin</option>

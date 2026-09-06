@@ -41,7 +41,7 @@ function isActive(routeName) {
         <div class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
             <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white border-r border-gray-100 px-6 pb-4">
                 <div class="flex h-16 shrink-0 items-center gap-2">
-                    <ApplicationLogo class="block h-8 w-auto fill-current text-[#176B5B]" />
+                    <ApplicationLogo class="block h-8 w-auto fill-current text-[#D40C14]" />
                     <span class="text-sm font-semibold text-gray-800">SIMPPAY</span>
                 </div>
                 <nav class="flex flex-1 flex-col">
@@ -51,7 +51,7 @@ function isActive(routeName) {
                                 :href="route(item.route)"
                                 :class="[
                                     isActive(item.route)
-                                        ? 'bg-[#176B5B]/10 text-[#176B5B] font-semibold'
+                                        ? 'bg-[#D40C14]/10 text-[#D40C14] font-semibold'
                                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800',
                                     'group flex gap-x-3 rounded-[10px] p-2.5 text-sm leading-6 transition-colors',
                                 ]"
@@ -59,7 +59,7 @@ function isActive(routeName) {
                                 <component
                                     :is="item.icon"
                                     :class="[
-                                        isActive(item.route) ? 'text-[#176B5B]' : 'text-gray-400 group-hover:text-gray-600',
+                                        isActive(item.route) ? 'text-[#D40C14]' : 'text-gray-400 group-hover:text-gray-600',
                                         'h-5 w-5 shrink-0',
                                     ]"
                                     :stroke-width="1.75"
@@ -82,7 +82,7 @@ function isActive(routeName) {
                 <X v-else class="h-5 w-5" :stroke-width="1.75" />
             </button>
             <div class="flex items-center gap-2">
-                <ApplicationLogo class="h-7 w-auto fill-current text-[#176B5B]" />
+                <ApplicationLogo class="h-7 w-auto fill-current text-[#D40C14]" />
                 <span class="text-sm font-semibold text-gray-800">SIMPPAY</span>
             </div>
         </div>
@@ -101,7 +101,7 @@ function isActive(routeName) {
                     @click.stop
                 >
                     <div class="flex h-14 items-center gap-2 border-b border-gray-100 px-6">
-                        <ApplicationLogo class="h-7 w-auto fill-current text-[#176B5B]" />
+                        <ApplicationLogo class="h-7 w-auto fill-current text-[#D40C14]" />
                         <span class="text-sm font-semibold text-gray-800">SIMPPAY</span>
                     </div>
                     <nav class="flex flex-1 flex-col px-4 py-4">
@@ -112,7 +112,7 @@ function isActive(routeName) {
                                     @click="mobileMenuOpen = false"
                                     :class="[
                                         isActive(item.route)
-                                            ? 'bg-[#176B5B]/10 text-[#176B5B] font-semibold'
+                                            ? 'bg-[#D40C14]/10 text-[#D40C14] font-semibold'
                                             : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800',
                                         'group flex gap-x-3 rounded-[10px] p-2.5 text-sm leading-6 transition-colors',
                                     ]"
@@ -120,7 +120,7 @@ function isActive(routeName) {
                                     <component
                                         :is="item.icon"
                                         :class="[
-                                            isActive(item.route) ? 'text-[#176B5B]' : 'text-gray-400 group-hover:text-gray-600',
+                                            isActive(item.route) ? 'text-[#D40C14]' : 'text-gray-400 group-hover:text-gray-600',
                                             'h-5 w-5 shrink-0',
                                         ]"
                                         :stroke-width="1.75"
@@ -179,14 +179,14 @@ function isActive(routeName) {
                         :href="route(item.route)"
                         :class="[
                             isActive(item.route)
-                                ? 'text-[#176B5B]'
+                                ? 'text-[#D40C14]'
                                 : 'text-gray-400',
                             'flex flex-col items-center gap-0.5 px-3 py-2 text-[10px] font-medium',
                         ]"
                     >
                         <component
                             :is="item.icon"
-                            :class="[isActive(item.route) ? 'text-[#176B5B]' : 'text-gray-400', 'h-5 w-5']"
+                            :class="[isActive(item.route) ? 'text-[#D40C14]' : 'text-gray-400', 'h-5 w-5']"
                             :stroke-width="1.75"
                         />
                         {{ item.name }}

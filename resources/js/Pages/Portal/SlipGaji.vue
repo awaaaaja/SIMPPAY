@@ -75,7 +75,7 @@ function toggleDetail(slip) {
                 <select
                     v-model="selectedPeriode"
                     @change="onPeriodeChange"
-                    class="block w-full max-w-xs rounded-[10px] border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-[#176B5B] focus:ring-1 focus:ring-[#176B5B] focus:outline-none"
+                    class="block w-full max-w-xs rounded-[10px] border border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-[#D40C14] focus:ring-1 focus:ring-[#D40C14] focus:outline-none"
                 >
                     <option value="">Semua periode finalized</option>
                     <option v-for="p in periodes" :key="p.id" :value="p.id">
@@ -114,7 +114,7 @@ function toggleDetail(slip) {
                                 :href="route('portal.slip-gaji.pdf', slip.id)"
                                 target="_blank"
                                 @click.stop
-                                class="inline-flex items-center px-3 py-1.5 bg-[#176B5B] text-white text-xs font-medium rounded-[8px] hover:bg-[#145a4c] transition-colors"
+                                class="inline-flex items-center px-3 py-1.5 bg-[#D40C14] text-white text-xs font-medium rounded-[8px] hover:bg-[#A30A10] transition-colors"
                             >
                                 <Download class="h-3.5 w-3.5" :stroke-width="1.75" />
                             </a>
@@ -181,7 +181,7 @@ function toggleDetail(slip) {
                             <!-- Total -->
                             <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center">
                                 <span class="text-xs font-semibold text-gray-600">Take Home Pay</span>
-                                <span class="text-sm font-semibold text-[#176B5B] tabular-nums">
+                                <span class="text-sm font-semibold text-[#D40C14] tabular-nums">
                                     {{ showNominal ? formatRupiah(slip.total_gaji) : 'Rp ****' }}
                                 </span>
                             </div>

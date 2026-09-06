@@ -44,7 +44,7 @@ function statusColor(status) {
     const map = {
         draft: 'bg-gray-100 text-gray-600',
         calculated: 'bg-amber-50 text-amber-700',
-        finalized: 'bg-[#176B5B]/10 text-[#176B5B]',
+        finalized: 'bg-[#D40C14]/10 text-[#D40C14]',
         void: 'bg-red-50 text-red-600',
     };
     return map[status] || 'bg-gray-100 text-gray-600';
@@ -71,7 +71,7 @@ onMounted(() => {
                 {
                     label: 'Total Penggajian',
                     data: props.payrollTrend.map((h) => Number(h.total)),
-                    backgroundColor: '#176B5B',
+                    backgroundColor: '#D40C14',
                     borderRadius: 6,
                     barThickness: 32,
                 },
@@ -139,10 +139,10 @@ onMounted(() => {
                 >
                     <div class="flex items-center gap-3 mb-3">
                         <div
-                            class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#176B5B]/10"
+                            class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#D40C14]/10"
                         >
                             <Users
-                                class="h-[18px] w-[18px] text-[#176B5B]"
+                                class="h-[18px] w-[18px] text-[#D40C14]"
                                 :stroke-width="1.75"
                             />
                         </div>
@@ -168,10 +168,10 @@ onMounted(() => {
                 >
                     <div class="flex items-center gap-3 mb-3">
                         <div
-                            class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#176B5B]/10"
+                            class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#D40C14]/10"
                         >
                             <Briefcase
-                                class="h-[18px] w-[18px] text-[#176B5B]"
+                                class="h-[18px] w-[18px] text-[#D40C14]"
                                 :stroke-width="1.75"
                             />
                         </div>
@@ -197,10 +197,10 @@ onMounted(() => {
                 >
                     <div class="flex items-center gap-3 mb-3">
                         <div
-                            class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#176B5B]/10"
+                            class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#D40C14]/10"
                         >
                             <Wallet
-                                class="h-[18px] w-[18px] text-[#176B5B]"
+                                class="h-[18px] w-[18px] text-[#D40C14]"
                                 :stroke-width="1.75"
                             />
                         </div>
@@ -236,10 +236,10 @@ onMounted(() => {
                 >
                     <div class="flex items-center gap-3 mb-3">
                         <div
-                            class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#176B5B]/10"
+                            class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#D40C14]/10"
                         >
                             <Calendar
-                                class="h-[18px] w-[18px] text-[#176B5B]"
+                                class="h-[18px] w-[18px] text-[#D40C14]"
                                 :stroke-width="1.75"
                             />
                         </div>

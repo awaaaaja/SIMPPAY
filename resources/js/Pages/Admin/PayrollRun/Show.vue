@@ -27,7 +27,7 @@ function statusBadge(status) {
     const map = {
         draft: 'bg-gray-100 text-gray-700',
         calculated: 'bg-blue-100 text-blue-700',
-        finalized: 'bg-[#176B5B]/10 text-[#176B5B]',
+        finalized: 'bg-[#D40C14]/10 text-[#D40C14]',
         void: 'bg-red-100 text-red-700',
     };
     return map[status] || 'bg-gray-100 text-gray-700';
@@ -76,7 +76,7 @@ const grandTotal = props.run.details?.reduce((sum, d) => sum + parseFloat(d.tota
             <div class="flex items-center justify-between">
                 <div>
                     <button @click="router.get(route(`${prefix}.payroll-run.index`))"
-                        class="text-sm text-gray-500 hover:text-[#176B5B] mb-1 transition-colors">
+                        class="text-sm text-gray-500 hover:text-[#D40C14] mb-1 transition-colors">
                         Kembali
                     </button>
                     <h2 class="font-semibold text-lg text-gray-800 leading-tight">
@@ -100,7 +100,7 @@ const grandTotal = props.run.details?.reduce((sum, d) => sum + parseFloat(d.tota
                         Export Excel
                     </a>
                     <button v-if="can.update && run.status === 'calculated'" @click="finalize"
-                        class="inline-flex items-center px-4 py-2 bg-[#176B5B] text-white text-sm font-medium rounded-[10px] hover:bg-[#145a4c] transition-colors">
+                        class="inline-flex items-center px-4 py-2 bg-[#D40C14] text-white text-sm font-medium rounded-[10px] hover:bg-[#A30A10] transition-colors">
                         Finalize
                     </button>
                     <button v-if="can.update && run.status === 'finalized'" @click="openVoidModal"
@@ -168,7 +168,7 @@ const grandTotal = props.run.details?.reduce((sum, d) => sum + parseFloat(d.tota
                                 <td class="px-6 py-4 text-sm text-gray-800 text-right">{{ formatRupiah(detail.tj_transport) }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-800 text-right">{{ formatRupiah(detail.uang_makan) }}</td>
                                 <td class="px-6 py-4 text-sm text-red-600 text-right">{{ formatRupiah(detail.potongan_alpha) }}</td>
-                                <td class="px-6 py-4 text-sm text-[#176B5B] text-right">+{{ formatRupiah(detail.total_tunjangan_tambahan) }}</td>
+                                <td class="px-6 py-4 text-sm text-[#D40C14] text-right">+{{ formatRupiah(detail.total_tunjangan_tambahan) }}</td>
                                 <td class="px-6 py-4 text-sm text-red-600 text-right">-{{ formatRupiah(detail.total_potongan_tambahan) }}</td>
                                 <td class="px-6 py-4 text-sm font-semibold text-gray-800 text-right">{{ formatRupiah(detail.total_gaji) }}</td>
                                 <td class="px-6 py-4 text-center">
@@ -176,7 +176,7 @@ const grandTotal = props.run.details?.reduce((sum, d) => sum + parseFloat(d.tota
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <a :href="route(`${prefix}.slip-gaji.pdf`, detail.id)" target="_blank" @click.stop
-                                        class="inline-flex items-center px-2 py-1 text-xs font-medium text-[#176B5B] bg-[#176B5B]/10 rounded-[6px] hover:bg-[#176B5B]/20 transition-colors">
+                                        class="inline-flex items-center px-2 py-1 text-xs font-medium text-[#D40C14] bg-[#D40C14]/10 rounded-[6px] hover:bg-[#D40C14]/20 transition-colors">
                                         Cetak
                                     </a>
                                 </td>
@@ -229,7 +229,7 @@ const grandTotal = props.run.details?.reduce((sum, d) => sum + parseFloat(d.tota
                                 <div v-if="selectedDetail.breakdown_json?.tunjangan?.length" class="pt-1 border-t border-gray-50">
                                     <div v-for="(t, i) in selectedDetail.breakdown_json.tunjangan" :key="i" class="flex justify-between text-sm">
                                         <span class="text-gray-600">+ {{ t.nama }}</span>
-                                        <span class="text-[#176B5B]">{{ formatRupiah(t.nominal) }}</span>
+                                        <span class="text-[#D40C14]">{{ formatRupiah(t.nominal) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -274,7 +274,7 @@ const grandTotal = props.run.details?.reduce((sum, d) => sum + parseFloat(d.tota
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Alasan Void <span class="text-red-500">*</span></label>
                             <textarea v-model="voidReason" rows="3" required
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#176B5B] focus:ring-[#176B5B] text-sm"
+                                class="w-full rounded-[10px] border-gray-300 focus:border-[#D40C14] focus:ring-[#D40C14] text-sm"
                                 placeholder="Jelaskan alasan pembatalan..." />
                             <p v-if="voidForm.errors.void_reason" class="text-red-500 text-xs mt-1">{{ voidForm.errors.void_reason }}</p>
                         </div>

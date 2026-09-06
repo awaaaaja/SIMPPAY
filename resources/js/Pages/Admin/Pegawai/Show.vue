@@ -96,7 +96,7 @@ const statusColors = {
                                 @click="activeTab = tab.id"
                                 class="border-b-2 pb-3 text-sm font-medium transition"
                                 :class="activeTab === tab.id
-                                    ? 'border-[#176B5B] text-[#176B5B]'
+                                    ? 'border-[#D40C14] text-[#D40C14]'
                                     : 'border-transparent text-gray-500 hover:text-gray-700'"
                             >
                                 {{ tab.label }}

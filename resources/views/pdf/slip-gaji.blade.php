@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <style>
         body { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; font-size: 12px; color: #1a1a1a; margin: 0; padding: 20px; }
-        .header { text-align: center; margin-bottom: 24px; border-bottom: 2px solid #176B5B; padding-bottom: 16px; }
-        .header h1 { font-size: 18px; color: #176B5B; margin: 0 0 4px 0; font-weight: 700; }
+        .header { text-align: center; margin-bottom: 24px; border-bottom: 2px solid #D40C14; padding-bottom: 16px; }
+        .header h1 { font-size: 18px; color: #D40C14; margin: 0 0 4px 0; font-weight: 700; }
         .header p { font-size: 11px; color: #666; margin: 0; }
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; margin-bottom: 20px; }
         .info-row { display: flex; }
@@ -16,7 +16,7 @@
         th { background: #f9fafb; font-weight: 600; color: #555; }
         .text-right { text-align: right; }
         .total-row { font-weight: 700; background: #f0fdf4; }
-        .total-row td { border-top: 2px solid #176B5B; border-bottom: 2px solid #176B5B; }
+        .total-row td { border-top: 2px solid #D40C14; border-bottom: 2px solid #D40C14; }
         .footer { margin-top: 40px; font-size: 10px; color: #999; text-align: center; }
     </style>
 </head>

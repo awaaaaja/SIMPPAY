@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <style>
         body { font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; font-size: 11px; color: #1a1a1a; margin: 0; padding: 20px; }
-        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #176B5B; padding-bottom: 12px; }
-        .header h1 { font-size: 16px; color: #176B5B; margin: 0 0 4px 0; font-weight: 700; }
+        .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #D40C14; padding-bottom: 12px; }
+        .header h1 { font-size: 16px; color: #D40C14; margin: 0 0 4px 0; font-weight: 700; }
         .header p { font-size: 11px; color: #666; margin: 0; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
         th, td { padding: 5px 6px; border-bottom: 1px solid #e5e7eb; font-size: 10px; }
@@ -13,7 +13,7 @@
         .text-right { text-align: right; }
         .text-center { text-align: center; }
         .grand-total { font-weight: 700; background: #f0fdf4; }
-        .grand-total td { border-top: 2px solid #176B5B; border-bottom: 2px solid #176B5B; }
+        .grand-total td { border-top: 2px solid #D40C14; border-bottom: 2px solid #D40C14; }
         .footer { margin-top: 24px; font-size: 9px; color: #999; text-align: center; }
     </style>
 </head>

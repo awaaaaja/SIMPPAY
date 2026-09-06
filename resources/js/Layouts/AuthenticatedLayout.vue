@@ -98,7 +98,7 @@ const logoRoute = computed(() => route(`${prefix.value}.dashboard`));
             <!-- Logo -->
             <div class="flex h-16 items-center gap-2.5 px-4 border-b border-gray-100">
                 <Link :href="logoRoute" class="flex items-center gap-2.5 shrink-0">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[#176B5B]">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[#D40C14]">
                         <span class="text-white text-sm font-bold">S</span>
                     </div>
                     <span
@@ -135,7 +135,7 @@ const logoRoute = computed(() => route(`${prefix.value}.dashboard`));
                             :class="[
                                 'group flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-sm font-medium transition-all duration-150',
                                 isActive(item.route)
-                                    ? 'bg-[#176B5B]/8 text-[#176B5B]'
+                                    ? 'bg-[#D40C14]/8 text-[#D40C14]'
                                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800',
                             ]"
                             :title="sidebarCollapsed ? item.label : undefined"
@@ -144,21 +144,21 @@ const logoRoute = computed(() => route(`${prefix.value}.dashboard`));
                                 :class="[
                                     'relative flex h-8 w-8 items-center justify-center rounded-[8px] shrink-0 transition',
                                     isActive(item.route)
-                                        ? 'bg-[#176B5B]/10'
+                                        ? 'bg-[#D40C14]/10'
                                         : 'bg-transparent group-hover:bg-gray-100',
                                 ]"
                             >
                                 <!-- Active indicator -->
                                 <div
                                     v-if="isActive(item.route)"
-                                    class="absolute -left-[13px] top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-[#176B5B]"
+                                    class="absolute -left-[13px] top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-[#D40C14]"
                                 />
                                 <component
                                     :is="item.icon"
                                     :class="[
                                         'h-[18px] w-[18px]',
                                         isActive(item.route)
-                                            ? 'text-[#176B5B]'
+                                            ? 'text-[#D40C14]'
                                             : 'text-gray-400 group-hover:text-gray-600',
                                     ]"
                                     :stroke-width="1.75"
@@ -181,7 +181,7 @@ const logoRoute = computed(() => route(`${prefix.value}.dashboard`));
                             ]"
                         >
                             <div
-                                class="flex h-8 w-8 items-center justify-center rounded-full bg-[#176B5B]/10 text-[#176B5B] text-xs font-semibold shrink-0"
+                                class="flex h-8 w-8 items-center justify-center rounded-full bg-[#D40C14]/10 text-[#D40C14] text-xs font-semibold shrink-0"
                             >
                                 {{ $page.props.auth.user.name?.charAt(0) }}
                             </div>
@@ -222,7 +222,7 @@ const logoRoute = computed(() => route(`${prefix.value}.dashboard`));
                     <Menu class="h-5 w-5" />
                 </button>
                 <Link :href="logoRoute" class="flex items-center gap-2">
-                    <div class="flex h-7 w-7 items-center justify-center rounded-[6px] bg-[#176B5B]">
+                    <div class="flex h-7 w-7 items-center justify-center rounded-[6px] bg-[#D40C14]">
                         <span class="text-white text-xs font-bold">S</span>
                     </div>
                     <span class="text-sm font-semibold text-gray-800">SIMPPAY</span>
