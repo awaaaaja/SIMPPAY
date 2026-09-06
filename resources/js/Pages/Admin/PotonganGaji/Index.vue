@@ -82,7 +82,7 @@ function formatRupiah(val) {
             <div class="flex items-center justify-between">
                 <h2 class="font-semibold text-lg text-gray-800 leading-tight">Potongan Gaji</h2>
                 <button v-if="can.create" @click="openCreate"
-                    class="inline-flex items-center px-4 py-2 bg-[#D40C14] text-white text-sm font-medium rounded-[10px] hover:bg-[#A30A10] transition-colors">
+                    class="inline-flex items-center px-4 py-2 bg-[#025AB1] text-white text-sm font-medium rounded-[10px] hover:bg-[#014A96] transition-colors">
                     <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     Tambah Potongan
                 </button>
@@ -112,7 +112,7 @@ function formatRupiah(val) {
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <span v-if="p.is_alpha_penalty"
-                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#D40C14]/10 text-[#D40C14]">
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#025AB1]/10 text-[#025AB1]">
                                         Ya
                                     </span>
                                     <span v-else class="text-gray-400 text-xs">-</span>
@@ -120,14 +120,14 @@ function formatRupiah(val) {
                                 <td class="px-6 py-4 text-center">
                                     <button @click="toggleAktif(p.id)"
                                         class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors"
-                                        :class="p.aktif ? 'bg-[#D40C14]' : 'bg-gray-300'">
+                                        :class="p.aktif ? 'bg-[#025AB1]' : 'bg-gray-300'">
                                         <span class="inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform"
                                             :class="p.aktif ? 'translate-x-[18px]' : 'translate-x-[3px]'" />
                                     </button>
                                 </td>
                                 <td class="px-6 py-4 text-right space-x-2">
                                     <button v-if="can.update" @click="openEdit(p)"
-                                        class="text-[#D40C14] hover:text-[#A30A10] text-sm font-medium">
+                                        class="text-[#025AB1] hover:text-[#014A96] text-sm font-medium">
                                         Edit
                                     </button>
                                     <button v-if="can.delete" @click="destroy(p.id)"
@@ -153,7 +153,7 @@ function formatRupiah(val) {
                                 @click="link.url && router.get(link.url, {}, { preserveState: true, replace: true })"
                                 :disabled="!link.url"
                                 class="px-3 py-1 text-sm rounded-[10px] transition-colors"
-                                :class="link.active ? 'bg-[#D40C14] text-white' : 'text-gray-600 hover:bg-gray-100'"
+                                :class="link.active ? 'bg-[#025AB1] text-white' : 'text-gray-600 hover:bg-gray-100'"
                                 v-html="link.label" />
                         </div>
                     </div>
@@ -173,14 +173,14 @@ function formatRupiah(val) {
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Nama Potongan</label>
                             <input v-model="createForm.nama_potongan" type="text"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#D40C14] focus:ring-[#D40C14] text-sm" />
+                                class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm" />
                             <p v-if="createForm.errors.nama_potongan" class="text-red-500 text-xs mt-1">{{ createForm.errors.nama_potongan }}</p>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Tipe</label>
                                 <select v-model="createForm.tipe"
-                                    class="w-full rounded-[10px] border-gray-300 focus:border-[#D40C14] focus:ring-[#D40C14] text-sm">
+                                    class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm">
                                     <option value="nominal">Nominal (Rp)</option>
                                     <option value="persentase">Persentase (%)</option>
                                 </select>
@@ -188,18 +188,18 @@ function formatRupiah(val) {
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nilai</label>
                                 <input v-model.number="createForm.nilai" type="number" step="0.01" min="0"
-                                    class="w-full rounded-[10px] border-gray-300 focus:border-[#D40C14] focus:ring-[#D40C14] text-sm" />
+                                    class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm" />
                                 <p v-if="createForm.errors.nilai" class="text-red-500 text-xs mt-1">{{ createForm.errors.nilai }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
                             <input v-model="createForm.is_alpha_penalty" type="checkbox" id="is_alpha"
-                                class="rounded border-gray-300 text-[#D40C14] focus:ring-[#D40C14]" />
+                                class="rounded border-gray-300 text-[#025AB1] focus:ring-[#025AB1]" />
                             <label for="is_alpha" class="text-sm text-gray-700">Alpha Penalty (potongan khusus alpha)</label>
                         </div>
                         <div class="flex items-center gap-2">
                             <input v-model="createForm.aktif" type="checkbox" id="aktif"
-                                class="rounded border-gray-300 text-[#D40C14] focus:ring-[#D40C14]" />
+                                class="rounded border-gray-300 text-[#025AB1] focus:ring-[#025AB1]" />
                             <label for="aktif" class="text-sm text-gray-700">Aktif</label>
                         </div>
                         <div class="flex justify-end gap-3 pt-2">
@@ -208,7 +208,7 @@ function formatRupiah(val) {
                                 Batal
                             </button>
                             <button type="submit" :disabled="createForm.processing"
-                                class="px-4 py-2 text-sm font-medium text-white bg-[#D40C14] rounded-[10px] hover:bg-[#A30A10] transition-colors disabled:opacity-50">
+                                class="px-4 py-2 text-sm font-medium text-white bg-[#025AB1] rounded-[10px] hover:bg-[#014A96] transition-colors disabled:opacity-50">
                                 {{ createForm.processing ? 'Menyimpan...' : 'Simpan' }}
                             </button>
                         </div>

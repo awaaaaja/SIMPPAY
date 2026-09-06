@@ -103,13 +103,13 @@ function destroy(id) {
                     <template v-if="can.create">
                         <button
                             @click="showImportModal = true"
-                            class="inline-flex items-center rounded-md border border-[#D40C14] bg-white px-4 py-2 text-sm font-semibold text-[#D40C14] shadow-sm hover:bg-[#FEF2F2]"
+                            class="inline-flex items-center rounded-md border border-[#025AB1] bg-white px-4 py-2 text-sm font-semibold text-[#025AB1] shadow-sm hover:bg-[#FEF2F2]"
                         >
                             Import Excel
                         </button>
                         <button
                             @click="showCreateModal = true"
-                            class="inline-flex items-center rounded-md bg-[#D40C14] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#A30A10]"
+                            class="inline-flex items-center rounded-md bg-[#025AB1] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#014A96]"
                         >
                             Tambah Data
                         </button>
@@ -128,12 +128,12 @@ function destroy(id) {
                             v-model="periode"
                             @change="applyFilter"
                             type="month"
-                            class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"
+                            class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]"
                         />
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Jabatan</label>
-                        <select v-model="jabatanId" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
+                        <select v-model="jabatanId" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
                             <option value="">Semua</option>
                             <option v-for="j in jabatans" :key="j.id" :value="j.id">{{ j.nama_jabatan }}</option>
                         </select>
@@ -145,7 +145,7 @@ function destroy(id) {
                             @keyup.enter="applyFilter"
                             type="text"
                             placeholder="Nama atau NIK..."
-                            class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"
+                            class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]"
                         />
                     </div>
                 </div>
@@ -219,7 +219,7 @@ function destroy(id) {
                                 v-else
                                 :href="link.url"
                                 class="rounded-md px-3 py-2 text-sm"
-                                :class="link.active ? 'bg-[#D40C14] text-white' : 'text-gray-700 hover:bg-gray-100'"
+                                :class="link.active ? 'bg-[#025AB1] text-white' : 'text-gray-700 hover:bg-gray-100'"
                                 v-html="link.label"
                             />
                         </template>
@@ -239,7 +239,7 @@ function destroy(id) {
                             v-model="createForm.pegawai_id"
                             type="number"
                             required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]"
                         />
                         <p v-if="createForm.errors.pegawai_id" class="mt-1 text-sm text-red-600">{{ createForm.errors.pegawai_id }}</p>
                     </div>
@@ -249,7 +249,7 @@ function destroy(id) {
                             v-model="createForm.periode"
                             type="date"
                             required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]"
                         />
                         <p v-if="createForm.errors.periode" class="mt-1 text-sm text-red-600">{{ createForm.errors.periode }}</p>
                     </div>
@@ -261,7 +261,7 @@ function destroy(id) {
                                 type="number"
                                 min="0"
                                 required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]"
                             />
                         </div>
                         <div>
@@ -271,7 +271,7 @@ function destroy(id) {
                                 type="number"
                                 min="0"
                                 required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]"
                             />
                         </div>
                         <div>
@@ -281,7 +281,7 @@ function destroy(id) {
                                 type="number"
                                 min="0"
                                 required
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]"
                             />
                         </div>
                     </div>
@@ -296,7 +296,7 @@ function destroy(id) {
                         <button
                             type="submit"
                             :disabled="createForm.processing"
-                            class="rounded-md bg-[#D40C14] px-4 py-2 text-sm font-semibold text-white hover:bg-[#A30A10]"
+                            class="rounded-md bg-[#025AB1] px-4 py-2 text-sm font-semibold text-white hover:bg-[#014A96]"
                         >
                             Simpan
                         </button>
@@ -316,7 +316,7 @@ function destroy(id) {
                             v-model="importForm.periode"
                             type="date"
                             required
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]"
                         />
                         <p v-if="importForm.errors.periode" class="mt-1 text-sm text-red-600">{{ importForm.errors.periode }}</p>
                     </div>
@@ -327,7 +327,7 @@ function destroy(id) {
                             accept=".xlsx,.xls"
                             @change="onFileChange"
                             required
-                            class="mt-1 block w-full text-sm text-gray-500 file:mr-3 file:rounded-md file:border-0 file:bg-[#D40C14] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#A30A10]"
+                            class="mt-1 block w-full text-sm text-gray-500 file:mr-3 file:rounded-md file:border-0 file:bg-[#025AB1] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[#014A96]"
                         />
                         <p v-if="importForm.errors.file" class="mt-1 text-sm text-red-600">{{ importForm.errors.file }}</p>
                     </div>
@@ -346,7 +346,7 @@ function destroy(id) {
                         <button
                             type="submit"
                             :disabled="importForm.processing"
-                            class="rounded-md bg-[#D40C14] px-4 py-2 text-sm font-semibold text-white hover:bg-[#A30A10]"
+                            class="rounded-md bg-[#025AB1] px-4 py-2 text-sm font-semibold text-white hover:bg-[#014A96]"
                         >
                             Import
                         </button>

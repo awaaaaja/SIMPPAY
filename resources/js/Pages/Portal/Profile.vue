@@ -52,8 +52,8 @@ const updatePassword = () => {
             <!-- User Info Card -->
             <div class="bg-white rounded-[16px] shadow-[0_1px_2px_rgba(0,0,0,.04),0_8px_24px_rgba(0,0,0,.04)] p-6 mb-6">
                 <div class="flex items-center gap-4">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#D40C14]/10">
-                        <User class="h-6 w-6 text-[#D40C14]" :stroke-width="1.75" />
+                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-[#025AB1]/10">
+                        <User class="h-6 w-6 text-[#025AB1]" :stroke-width="1.75" />
                     </div>
                     <div>
                         <p class="text-sm font-semibold text-gray-800">{{ user.name }}</p>

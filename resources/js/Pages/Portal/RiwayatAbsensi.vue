@@ -45,7 +45,7 @@ function totalHari(row) {
                 <input
                     type="month"
                     v-model="bulanFilter"
-                    class="rounded-[10px] border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 focus:border-[#D40C14] focus:ring-1 focus:ring-[#D40C14] focus:outline-none"
+                    class="rounded-[10px] border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 focus:border-[#025AB1] focus:ring-1 focus:ring-[#025AB1] focus:outline-none"
                 />
             </div>
 
@@ -53,7 +53,7 @@ function totalHari(row) {
             <div class="mb-6 grid grid-cols-3 gap-3">
                 <div class="rounded-[12px] bg-white p-4 shadow-sm">
                     <div class="flex items-center gap-2">
-                        <CheckCircle class="h-4 w-4 text-[#D40C14]" :stroke-width="1.75" />
+                        <CheckCircle class="h-4 w-4 text-[#025AB1]" :stroke-width="1.75" />
                         <span class="text-xs text-gray-500">Hadir</span>
                     </div>
                     <p class="mt-1 text-lg font-semibold text-gray-900" style="font-variant-numeric: tabular-nums">

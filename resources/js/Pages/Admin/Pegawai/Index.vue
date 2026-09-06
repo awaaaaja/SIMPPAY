@@ -60,7 +60,7 @@ const statusColors = {
                 <Link
                     v-if="can.create"
                     :href="route(`${prefix}.pegawai.create`)"
-                    class="inline-flex items-center rounded-md bg-[#D40C14] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#A30A10]"
+                    class="inline-flex items-center rounded-md bg-[#025AB1] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#014A96]"
                 >
                     Tambah Pegawai
                 </Link>
@@ -78,19 +78,19 @@ const statusColors = {
                             @keyup.enter="applyFilter"
                             type="text"
                             placeholder="Nama atau NIK..."
-                            class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]"
+                            class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]"
                         />
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Jabatan</label>
-                        <select v-model="jabatan_id" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
+                        <select v-model="jabatan_id" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
                             <option value="">Semua</option>
                             <option v-for="j in jabatans" :key="j.id" :value="j.id">{{ j.nama_jabatan }}</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Status</label>
-                        <select v-model="status_pegawai" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
+                        <select v-model="status_pegawai" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
                             <option value="">Semua</option>
                             <option value="aktif">Aktif</option>
                             <option value="nonaktif">Nonaktif</option>
@@ -99,14 +99,14 @@ const statusColors = {
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Struktural</label>
-                        <select v-model="struktural_id" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
+                        <select v-model="struktural_id" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
                             <option value="">Semua</option>
                             <option v-for="s in strukturals" :key="s.id" :value="s.id">{{ s.nama_struktural }}</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Fungsional</label>
-                        <select v-model="fungsional_id" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#D40C14] focus:ring-[#D40C14]">
+                        <select v-model="fungsional_id" @change="applyFilter" class="mt-1 rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
                             <option value="">Semua</option>
                             <option v-for="f in fungsionals" :key="f.id" :value="f.id">{{ f.nama_fungsional }}</option>
                         </select>
@@ -134,7 +134,7 @@ const statusColors = {
                                     {{ (pegawais.current_page - 1) * pegawais.per_page + index + 1 }}
                                 </td>
                                 <td class="whitespace-nowrap px-6 py-4 text-left">
-                                    <Link :href="route(`${prefix}.pegawai.show`, pegawai.id)" class="text-sm font-medium text-gray-900 hover:text-[#D40C14]">
+                                    <Link :href="route(`${prefix}.pegawai.show`, pegawai.id)" class="text-sm font-medium text-gray-900 hover:text-[#025AB1]">
                                         {{ pegawai.nama_pegawai }}
                                     </Link>
                                 </td>
@@ -159,7 +159,7 @@ const statusColors = {
                                 <td class="whitespace-nowrap px-6 py-4 text-right text-sm">
                                     <Link
                                         :href="route(`${prefix}.pegawai.show`, pegawai.id)"
-                                        class="mr-3 text-[#D40C14] hover:underline"
+                                        class="mr-3 text-[#025AB1] hover:underline"
                                     >
                                         Lihat
                                     </Link>
@@ -190,7 +190,7 @@ const statusColors = {
                                 v-else
                                 :href="link.url"
                                 class="rounded-md px-3 py-2 text-sm"
-                                :class="link.active ? 'bg-[#D40C14] text-white' : 'text-gray-700 hover:bg-gray-100'"
+                                :class="link.active ? 'bg-[#025AB1] text-white' : 'text-gray-700 hover:bg-gray-100'"
                                 v-html="link.label"
                             />
                         </template>

@@ -7,11 +7,11 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ─── SIMPPAY Design Tokens — Adzkia Brand Colors ───────────────────── */
-/* Source: logo-adzkia.png — Red #D40C14, Blue #025AB1, Gold #B07F01 */
+/* Source: logo-adzkia.png — Blue #025AB1 (primary), Red #D40C14 (secondary), Gold #B07F01 */
 :root {
     /* Legacy tokens (kept for existing components) */
-    --simppay-primary: #D40C14;
-    --simppay-primary-hover: #A30A10;
+    --simppay-primary: #025AB1;
+    --simppay-primary-hover: #014A96;
     --simppay-bg: #F6F7F4;
     --simppay-surface: #FFFFFF;
     --simppay-text: #1a1a1a;
@@ -31,11 +31,11 @@
     --card-foreground: oklch(0.2178 0 89.88);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.2178 0 89.88);
-    /* Primary: Red #D40C14 */
-    --primary: oklch(0.5498 0.2205 27.90);
+    /* Primary: Blue #025AB1 */
+    --primary: oklch(0.4752 0.1562 255.17);
     --primary-foreground: oklch(0.9851 0 89.88);
-    /* Secondary: Blue #025AB1 */
-    --secondary: oklch(0.4752 0.1562 255.17);
+    /* Secondary: Red #D40C14 */
+    --secondary: oklch(0.5498 0.2205 27.90);
     --secondary-foreground: oklch(0.9851 0 89.88);
     --muted: oklch(0.96 0.002 264);
     --muted-foreground: oklch(0.551 0.0234 264.36);
@@ -46,22 +46,22 @@
     --destructive: oklch(0.5498 0.2205 27.90);
     --border: oklch(0.9276 0.0058 264.53);
     --input: oklch(0.9276 0.0058 264.53);
-    --ring: oklch(0.5498 0.2205 27.90);
+    --ring: oklch(0.4752 0.1562 255.17);
     /* Charts: Adzkia palette */
-    --chart-1: oklch(0.5498 0.2205 27.90);
-    --chart-2: oklch(0.4752 0.1562 255.17);
+    --chart-1: oklch(0.4752 0.1562 255.17);
+    --chart-2: oklch(0.5498 0.2205 27.90);
     --chart-3: oklch(0.6287 0.1295 81.31);
     --chart-4: oklch(0.5305 0.1087 83.25);
     --chart-5: oklch(0.4535 0.1800 27.57);
     /* Sidebar */
     --sidebar: oklch(1 0 0);
     --sidebar-foreground: oklch(0.2178 0 89.88);
-    --sidebar-primary: oklch(0.5498 0.2205 27.90);
+    --sidebar-primary: oklch(0.4752 0.1562 255.17);
     --sidebar-primary-foreground: oklch(0.9851 0 89.88);
-    --sidebar-accent: oklch(0.96 0.015 27);
-    --sidebar-accent-foreground: oklch(0.5498 0.2205 27.90);
+    --sidebar-accent: oklch(0.96 0.0207 261.77);
+    --sidebar-accent-foreground: oklch(0.4752 0.1562 255.17);
     --sidebar-border: oklch(0.9276 0.0058 264.53);
-    --sidebar-ring: oklch(0.5498 0.2205 27.90);
+    --sidebar-ring: oklch(0.4752 0.1562 255.17);
 }
 
 /* ─── Base ────────────────────────────────────────────────────────────── */

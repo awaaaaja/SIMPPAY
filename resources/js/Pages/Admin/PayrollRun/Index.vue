@@ -39,7 +39,7 @@ function statusBadge(status) {
     const map = {
         draft: 'bg-gray-100 text-gray-700',
         calculated: 'bg-blue-100 text-blue-700',
-        finalized: 'bg-[#D40C14]/10 text-[#D40C14]',
+        finalized: 'bg-[#025AB1]/10 text-[#025AB1]',
         void: 'bg-red-100 text-red-700',
     };
     return map[status] || 'bg-gray-100 text-gray-700';
@@ -54,7 +54,7 @@ function statusBadge(status) {
             <div class="flex items-center justify-between">
                 <h2 class="font-semibold text-lg text-gray-800 leading-tight">Payroll Run</h2>
                 <button v-if="can.create" @click="showCalcModal = true"
-                    class="inline-flex items-center px-4 py-2 bg-[#D40C14] text-white text-sm font-medium rounded-[10px] hover:bg-[#A30A10] transition-colors">
+                    class="inline-flex items-center px-4 py-2 bg-[#025AB1] text-white text-sm font-medium rounded-[10px] hover:bg-[#014A96] transition-colors">
                     <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     Hitung Gaji
                 </button>
@@ -87,7 +87,7 @@ function statusBadge(status) {
                                 <td class="px-6 py-4 text-sm text-gray-500">{{ run.finalized_by?.name || '-' }}</td>
                                 <td class="px-6 py-4 text-right">
                                     <button @click="router.get(route(`${prefix}.payroll-run.show`, run.id))"
-                                        class="text-[#D40C14] hover:text-[#A30A10] text-sm font-medium">
+                                        class="text-[#025AB1] hover:text-[#014A96] text-sm font-medium">
                                         Detail
                                     </button>
                                 </td>
@@ -109,7 +109,7 @@ function statusBadge(status) {
                                 @click="link.url && router.get(link.url, {}, { preserveState: true, replace: true })"
                                 :disabled="!link.url"
                                 class="px-3 py-1 text-sm rounded-[10px] transition-colors"
-                                :class="link.active ? 'bg-[#D40C14] text-white' : 'text-gray-600 hover:bg-gray-100'"
+                                :class="link.active ? 'bg-[#025AB1] text-white' : 'text-gray-600 hover:bg-gray-100'"
                                 v-html="link.label" />
                         </div>
                     </div>
@@ -127,7 +127,7 @@ function statusBadge(status) {
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Periode (Bulan Tahun)</label>
                             <input v-model="calcForm.periode" type="month" required
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#D40C14] focus:ring-[#D40C14] text-sm" />
+                                class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm" />
                             <p v-if="calcForm.errors.periode" class="text-red-500 text-xs mt-1">{{ calcForm.errors.periode }}</p>
                         </div>
                         <p class="text-xs text-gray-500">
@@ -140,7 +140,7 @@ function statusBadge(status) {
                                 Batal
                             </button>
                             <button type="submit" :disabled="calcForm.processing"
-                                class="px-4 py-2 text-sm font-medium text-white bg-[#D40C14] rounded-[10px] hover:bg-[#A30A10] transition-colors disabled:opacity-50">
+                                class="px-4 py-2 text-sm font-medium text-white bg-[#025AB1] rounded-[10px] hover:bg-[#014A96] transition-colors disabled:opacity-50">
                                 {{ calcForm.processing ? 'Menghitung...' : 'Hitung Gaji' }}
                             </button>
                         </div>
