@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── SIMPPAY Design Tokens (DESIGN.md §1) ──────────────────────────── */
+:root {
+    --simppay-primary: #176B5B;
+    --simppay-primary-hover: #145a4c;
+    --simppay-bg: #F6F7F4;
+    --simppay-surface: #FFFFFF;
+    --simppay-text: #1a1a1a;
+    --simppay-text-secondary: #6b7280;
+    --simppay-border: #e5e7eb;
+    --simppay-radius-sm: 10px;
+    --simppay-radius-md: 12px;
+    --simppay-radius-lg: 16px;
+    --simppay-shadow-sm: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);
+    --simppay-shadow-hover: 0 10px 30px rgba(0,0,0,.07);
+}
+
+/* ─── Base ────────────────────────────────────────────────────────────── */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--simppay-bg);
+    color: var(--simppay-text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tabular nums for payroll numbers */
+.tabular-nums {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ─── FilePond overrides (minimal, §21) ─────────────────────────────── */
+.filepond--root {
+    border-radius: var(--simppay-radius-sm);
+}
+
+.filepond--label-root {
+    color: var(--simppay-text-secondary);
+}
