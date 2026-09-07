@@ -13,12 +13,13 @@ const props = defineProps({
     selectedPeriodeId: [String, Number, null],
 });
 
+const ALL = '__all__';
 const showNominal = ref(true);
-const selectedPeriode = ref(props.selectedPeriodeId ? String(props.selectedPeriodeId) : '');
+const selectedPeriode = ref(props.selectedPeriodeId ? String(props.selectedPeriodeId) : ALL);
 
 function onPeriodeChange(val) {
     selectedPeriode.value = val;
-    router.get(route('portal.slip.gaji'), { periode_id: val || undefined }, {
+    router.get(route('portal.slip.gaji'), { periode_id: val === ALL ? undefined : val }, {
         preserveState: true,
         replace: true,
     });
@@ -66,7 +67,7 @@ function toggleDetail(slip) {
                         <SelectValue placeholder="Semua periode finalized" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="">Semua periode finalized</SelectItem>
+                        <SelectItem :value="ALL">Semua periode finalized</SelectItem>
                         <SelectItem v-for="p in periodes" :key="p.id" :value="String(p.id)">
                             {{ formatPeriode(p.periode) }}
                         </SelectItem>

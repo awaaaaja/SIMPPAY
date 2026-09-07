@@ -23,10 +23,11 @@ const props = defineProps({
     can: Object,
 });
 
-const targetTipe = ref(props.filters.target_tipe || '');
+const ALL = '__all__';
+const targetTipe = ref(props.filters.target_tipe || ALL);
 
 function applyFilter() {
-    router.get(route(`${prefix.value}.tunjangan-gaji.index`), { target_tipe: targetTipe.value }, {
+    router.get(route(`${prefix.value}.tunjangan-gaji.index`), { target_tipe: targetTipe.value === ALL ? '' : targetTipe.value }, {
         preserveState: true, replace: true,
     });
 }
@@ -108,7 +109,7 @@ function targetLabel(item) {
                 <Select v-model="targetTipe" @update:model-value="applyFilter">
                     <SelectTrigger class="w-48"><SelectValue placeholder="Semua Target" /></SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="">Semua Target</SelectItem>
+                        <SelectItem :value="ALL">Semua Target</SelectItem>
                         <SelectItem value="semua">Semua Pegawai</SelectItem>
                         <SelectItem value="jabatan">Per Jabatan</SelectItem>
                         <SelectItem value="pegawai">Per Pegawai</SelectItem>
@@ -206,7 +207,6 @@ function targetLabel(item) {
                         <Select v-model="createForm.jabatan_id">
                             <SelectTrigger><SelectValue placeholder="Pilih Jabatan" /></SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="">Pilih Jabatan</SelectItem>
                                 <SelectItem v-for="j in jabatans" :key="j.id" :value="String(j.id)">{{ j.nama_jabatan }}</SelectItem>
                             </SelectContent>
                         </Select>
@@ -217,7 +217,6 @@ function targetLabel(item) {
                         <Select v-model="createForm.pegawai_id">
                             <SelectTrigger><SelectValue placeholder="Pilih Pegawai" /></SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="">Pilih Pegawai</SelectItem>
                                 <SelectItem v-for="p in pegawais" :key="p.id" :value="String(p.id)">{{ p.nama_pegawai }} ({{ p.nik }})</SelectItem>
                             </SelectContent>
                         </Select>

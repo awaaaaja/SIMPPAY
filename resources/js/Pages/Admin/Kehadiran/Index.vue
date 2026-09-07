@@ -24,9 +24,10 @@ const props = defineProps({
     can: Object,
 });
 
+const ALL = '__all__';
 const search = ref(props.filters.search || '');
 const periode = ref(props.filters.periode || '');
-const jabatanId = ref(props.filters.jabatan_id || '');
+const jabatanId = ref(props.filters.jabatan_id || ALL);
 const showCreateModal = ref(false);
 const showImportModal = ref(false);
 
@@ -34,7 +35,7 @@ function applyFilter() {
     router.get(route(`${prefix.value}.kehadiran.index`), {
         search: search.value,
         periode: periode.value,
-        jabatan_id: jabatanId.value,
+        jabatan_id: jabatanId.value === ALL ? '' : jabatanId.value,
     }, {
         preserveState: true,
         replace: true,
@@ -191,7 +192,7 @@ function doDelete(id) {
                             <SelectValue placeholder="Semua" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">Semua</SelectItem>
+                            <SelectItem :value="ALL">Semua</SelectItem>
                             <SelectItem v-for="j in jabatans" :key="j.id" :value="String(j.id)">
                                 {{ j.nama_jabatan }}
                             </SelectItem>

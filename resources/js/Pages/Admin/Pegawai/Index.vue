@@ -26,19 +26,20 @@ const props = defineProps({
     filters: Object,
 });
 
+const ALL = '__all__';
 const search = ref(props.filters.search || '');
-const jabatan_id = ref(props.filters.jabatan_id || '');
-const status_pegawai = ref(props.filters.status_pegawai || '');
-const struktural_id = ref(props.filters.struktural_id || '');
-const fungsional_id = ref(props.filters.fungsional_id || '');
+const jabatan_id = ref(props.filters.jabatan_id || ALL);
+const status_pegawai = ref(props.filters.status_pegawai || ALL);
+const struktural_id = ref(props.filters.struktural_id || ALL);
+const fungsional_id = ref(props.filters.fungsional_id || ALL);
 
 function applyFilter() {
     router.get(route(`${prefix.value}.pegawai.index`), {
         search: search.value,
-        jabatan_id: jabatan_id.value,
-        status_pegawai: status_pegawai.value,
-        struktural_id: struktural_id.value,
-        fungsional_id: fungsional_id.value,
+        jabatan_id: jabatan_id.value === ALL ? '' : jabatan_id.value,
+        status_pegawai: status_pegawai.value === ALL ? '' : status_pegawai.value,
+        struktural_id: struktural_id.value === ALL ? '' : struktural_id.value,
+        fungsional_id: fungsional_id.value === ALL ? '' : fungsional_id.value,
     }, {
         preserveState: true,
         replace: true,
@@ -85,7 +86,7 @@ function statusVariant(status) {
                             <SelectValue placeholder="Semua" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">Semua</SelectItem>
+                            <SelectItem :value="ALL">Semua</SelectItem>
                             <SelectItem v-for="j in jabatans" :key="j.id" :value="String(j.id)">
                                 {{ j.nama_jabatan }}
                             </SelectItem>
@@ -99,7 +100,7 @@ function statusVariant(status) {
                             <SelectValue placeholder="Semua" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">Semua</SelectItem>
+                            <SelectItem :value="ALL">Semua</SelectItem>
                             <SelectItem value="aktif">Aktif</SelectItem>
                             <SelectItem value="nonaktif">Nonaktif</SelectItem>
                             <SelectItem value="pensiun">Pensiun</SelectItem>
@@ -113,7 +114,7 @@ function statusVariant(status) {
                             <SelectValue placeholder="Semua" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">Semua</SelectItem>
+                            <SelectItem :value="ALL">Semua</SelectItem>
                             <SelectItem v-for="s in strukturals" :key="s.id" :value="String(s.id)">
                                 {{ s.nama_struktural }}
                             </SelectItem>
@@ -127,7 +128,7 @@ function statusVariant(status) {
                             <SelectValue placeholder="Semua" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="">Semua</SelectItem>
+                            <SelectItem :value="ALL">Semua</SelectItem>
                             <SelectItem v-for="f in fungsionals" :key="f.id" :value="String(f.id)">
                                 {{ f.nama_fungsional }}
                             </SelectItem>
