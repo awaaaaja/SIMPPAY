@@ -1,14 +1,11 @@
 <script setup>
 import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Head, useForm } from '@inertiajs/vue3';
 
-const form = useForm({
-    password: '',
-});
+const form = useForm({ password: '' });
 
 const submit = () => {
     form.post(route('password.confirm'), {
@@ -19,37 +16,33 @@ const submit = () => {
 
 <template>
     <GuestLayout>
-        <Head title="Confirm Password" />
+        <Head title="Konfirmasi Password" />
 
-        <div class="mb-4 text-sm text-gray-600">
-            This is a secure area of the application. Please confirm your
-            password before continuing.
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">Konfirmasi Password</h2>
+            <p class="text-sm text-gray-500 mt-1">
+                Ini adalah area aman dari aplikasi. Silakan masukkan password Anda untuk melanjutkan.
+            </p>
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="password" value="Password" />
-                <TextInput
+        <form @submit.prevent="submit" class="space-y-5">
+            <div class="space-y-2">
+                <Label for="password">Password</Label>
+                <Input
                     id="password"
-                    type="password"
-                    class="mt-1 block w-full"
                     v-model="form.password"
+                    type="password"
+                    placeholder="Masukkan password"
                     required
-                    autocomplete="current-password"
                     autofocus
+                    autocomplete="current-password"
                 />
-                <InputError class="mt-2" :message="form.errors.password" />
+                <p v-if="form.errors.password" class="text-sm text-destructive">{{ form.errors.password }}</p>
             </div>
 
-            <div class="mt-4 flex justify-end">
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Confirm
-                </PrimaryButton>
-            </div>
+            <Button type="submit" class="w-full bg-[#025AB1] hover:bg-[#014A96] text-white" :disabled="form.processing">
+                Konfirmasi
+            </Button>
         </form>
     </GuestLayout>
 </template>
