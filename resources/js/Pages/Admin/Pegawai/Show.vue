@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ArrowLeft, Pencil, UserPlus, CheckCircle } from '@lucide/vue';
 
@@ -105,6 +105,7 @@ function resolve(obj, path) {
                         <DialogContent>
                             <DialogHeader>
                                 <DialogTitle>Buat Akun Login</DialogTitle>
+                                <DialogDescription class="sr-only">Form pembuatan akun login untuk pegawai ini.</DialogDescription>
                             </DialogHeader>
                             <form @submit.prevent="createAccount" class="space-y-4">
                                 <div class="space-y-1.5">

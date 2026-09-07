@@ -106,9 +106,7 @@ const logoRoute = computed(() => route(`${prefix.value}.dashboard`));
             <!-- Logo -->
             <div class="flex h-16 items-center gap-2.5 px-4 border-b border-gray-100">
                 <Link :href="logoRoute" class="flex items-center gap-2.5 shrink-0">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[#025AB1]">
-                        <span class="text-white text-sm font-bold">S</span>
-                    </div>
+                    <img src="/images/logo-simppay.png" alt="Logo Adzkia" class="h-8 w-8 rounded-[8px] object-cover" />
                     <span
                         v-if="!sidebarCollapsed"
                         class="text-sm font-semibold text-gray-800 tracking-tight"
@@ -231,9 +229,7 @@ const logoRoute = computed(() => route(`${prefix.value}.dashboard`));
                     <Menu class="h-5 w-5" />
                 </button>
                 <Link :href="logoRoute" class="flex items-center gap-2">
-                    <div class="flex h-7 w-7 items-center justify-center rounded-[6px] bg-[#025AB1]">
-                        <span class="text-white text-xs font-bold">S</span>
-                    </div>
+                    <img src="/images/logo-simppay.png" alt="Logo Adzkia" class="h-7 w-7 rounded-[6px] object-cover" />
                     <span class="text-sm font-semibold text-gray-800">SIMPPAY</span>
                 </Link>
             </div>

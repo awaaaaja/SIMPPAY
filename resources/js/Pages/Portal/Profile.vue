@@ -45,8 +45,12 @@ function onAvatarChange(e) {
 }
 
 function updateProfile() {
-    profileForm.put(route('portal.profile.update'), {
+    profileForm.transform((data) => ({
+        ...data,
+        _method: 'put',
+    })).post(route('portal.profile.update'), {
         preserveScroll: true,
+        forceFormData: true,
     });
 }
 

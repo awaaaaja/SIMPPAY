@@ -41,7 +41,7 @@ function isActive(routeName) {
         <div class="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
             <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white border-r border-gray-100 px-6 pb-4">
                 <div class="flex h-16 shrink-0 items-center gap-2">
-                    <ApplicationLogo class="block h-8 w-auto fill-current text-[#025AB1]" />
+                    <img src="/images/logo-simppay.png" alt="Logo Adzkia" class="h-8 w-8 rounded-[8px] object-cover" />
                     <span class="text-sm font-semibold text-gray-800">SIMPPAY</span>
                 </div>
                 <nav class="flex flex-1 flex-col">
@@ -82,7 +82,7 @@ function isActive(routeName) {
                 <X v-else class="h-5 w-5" :stroke-width="1.75" />
             </button>
             <div class="flex items-center gap-2">
-                <ApplicationLogo class="h-7 w-auto fill-current text-[#025AB1]" />
+                <img src="/images/logo-simppay.png" alt="Logo Adzkia" class="h-7 w-7 rounded-[6px] object-cover" />
                 <span class="text-sm font-semibold text-gray-800">SIMPPAY</span>
             </div>
         </div>
@@ -101,7 +101,7 @@ function isActive(routeName) {
                     @click.stop
                 >
                     <div class="flex h-14 items-center gap-2 border-b border-gray-100 px-6">
-                        <ApplicationLogo class="h-7 w-auto fill-current text-[#025AB1]" />
+                        <img src="/images/logo-simppay.png" alt="Logo Adzkia" class="h-7 w-7 rounded-[6px] object-cover" />
                         <span class="text-sm font-semibold text-gray-800">SIMPPAY</span>
                     </div>
                     <nav class="flex flex-1 flex-col px-4 py-4">
