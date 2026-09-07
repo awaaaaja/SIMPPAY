@@ -1,9 +1,8 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { useRoutePrefix } from '@/composables/useRoutePrefix.js';
 
@@ -37,32 +36,32 @@ function submit() {
                 <div class="bg-white p-6 shadow-sm sm:rounded-lg">
                     <form @submit.prevent="submit" class="space-y-6">
                         <div>
-                            <InputLabel for="nama_fungsional" value="Nama Fungsional" />
-                            <TextInput id="nama_fungsional" v-model="form.nama_fungsional" type="text" class="mt-1 block w-full" required />
-                            <InputError :message="form.errors.nama_fungsional" class="mt-2" />
+                            <Label for="nama_fungsional">Nama Fungsional</Label>
+                            <Input id="nama_fungsional" v-model="form.nama_fungsional" type="text" class="mt-1" required />
+                            <p v-if="form.errors.nama_fungsional" class="mt-1 text-sm text-destructive">{{ form.errors.nama_fungsional }}</p>
                         </div>
 
                         <div>
-                            <InputLabel for="angka_kredit" value="Angka Kredit" />
-                            <TextInput id="angka_kredit" v-model="form.angka_kredit" type="number" min="0" step="0.01" class="mt-1 block w-full" required />
-                            <InputError :message="form.errors.angka_kredit" class="mt-2" />
+                            <Label for="angka_kredit">Angka Kredit</Label>
+                            <Input id="angka_kredit" v-model="form.angka_kredit" type="number" min="0" step="0.01" class="mt-1" required />
+                            <p v-if="form.errors.angka_kredit" class="mt-1 text-sm text-destructive">{{ form.errors.angka_kredit }}</p>
                         </div>
 
                         <div>
-                            <InputLabel for="pangkat" value="Pangkat" />
-                            <TextInput id="pangkat" v-model="form.pangkat" type="text" class="mt-1 block w-full" />
-                            <InputError :message="form.errors.pangkat" class="mt-2" />
+                            <Label for="pangkat">Pangkat</Label>
+                            <Input id="pangkat" v-model="form.pangkat" type="text" class="mt-1" />
+                            <p v-if="form.errors.pangkat" class="mt-1 text-sm text-destructive">{{ form.errors.pangkat }}</p>
                         </div>
 
                         <div>
-                            <InputLabel for="golongan" value="Golongan" />
-                            <TextInput id="golongan" v-model="form.golongan" type="text" class="mt-1 block w-full" />
-                            <InputError :message="form.errors.golongan" class="mt-2" />
+                            <Label for="golongan">Golongan</Label>
+                            <Input id="golongan" v-model="form.golongan" type="text" class="mt-1" />
+                            <p v-if="form.errors.golongan" class="mt-1 text-sm text-destructive">{{ form.errors.golongan }}</p>
                         </div>
 
                         <div class="flex items-center justify-end gap-3">
-                            <Link :href="route(`${prefix}.fungsional.index`)" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">Batal</Link>
-                            <PrimaryButton :disabled="form.processing">Simpan</PrimaryButton>
+                            <Link :href="route(`${prefix}.fungsional.index`)" class="rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">Batal</Link>
+                            <Button type="submit" :disabled="form.processing">Simpan</Button>
                         </div>
                     </form>
                 </div>

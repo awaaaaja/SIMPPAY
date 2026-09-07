@@ -1,9 +1,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { useRoutePrefix } from '@/composables/useRoutePrefix.js';
 
@@ -36,29 +36,34 @@ function submit() {
                 <div class="bg-white p-6 shadow-sm sm:rounded-lg">
                     <form @submit.prevent="submit" class="space-y-6">
                         <div>
-                            <InputLabel for="nama_struktural" value="Nama Struktural" />
-                            <TextInput id="nama_struktural" v-model="form.nama_struktural" type="text" class="mt-1 block w-full" required />
-                            <InputError :message="form.errors.nama_struktural" class="mt-2" />
+                            <Label for="nama_struktural">Nama Struktural</Label>
+                            <Input id="nama_struktural" v-model="form.nama_struktural" type="text" class="mt-1" required />
+                            <p v-if="form.errors.nama_struktural" class="mt-1 text-sm text-destructive">{{ form.errors.nama_struktural }}</p>
                         </div>
 
                         <div>
-                            <InputLabel for="level_struktural" value="Level" />
-                            <TextInput id="level_struktural" v-model="form.level_struktural" type="text" class="mt-1 block w-full" />
-                            <InputError :message="form.errors.level_struktural" class="mt-2" />
+                            <Label for="level_struktural">Level</Label>
+                            <Input id="level_struktural" v-model="form.level_struktural" type="text" class="mt-1" />
+                            <p v-if="form.errors.level_struktural" class="mt-1 text-sm text-destructive">{{ form.errors.level_struktural }}</p>
                         </div>
 
                         <div>
-                            <InputLabel for="status" value="Status" />
-                            <select id="status" v-model="form.status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
-                                <option value="aktif">Aktif</option>
-                                <option value="nonaktif">Nonaktif</option>
-                            </select>
-                            <InputError :message="form.errors.status" class="mt-2" />
+                            <Label>Status</Label>
+                            <Select v-model="form.status">
+                                <SelectTrigger class="mt-1 w-full">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="aktif">Aktif</SelectItem>
+                                    <SelectItem value="nonaktif">Nonaktif</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <p v-if="form.errors.status" class="mt-1 text-sm text-destructive">{{ form.errors.status }}</p>
                         </div>
 
                         <div class="flex items-center justify-end gap-3">
-                            <Link :href="route(`${prefix}.struktural.index`)" class="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50">Batal</Link>
-                            <PrimaryButton :disabled="form.processing">Simpan</PrimaryButton>
+                            <Link :href="route(`${prefix}.struktural.index`)" class="rounded-lg border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">Batal</Link>
+                            <Button type="submit" :disabled="form.processing">Simpan</Button>
                         </div>
                     </form>
                 </div>
