@@ -32,6 +32,8 @@ class PotonganGajiController extends Controller
 
     public function store(StorePotonganGajiRequest $request): RedirectResponse
     {
+        $this->authorize('create', PotonganGaji::class);
+
         PotonganGaji::create($request->validated());
 
         return redirect()->route('admin.potongan-gaji.index')->with('success', 'Potongan gaji berhasil ditambahkan.');
@@ -39,6 +41,8 @@ class PotonganGajiController extends Controller
 
     public function update(StorePotonganGajiRequest $request, PotonganGaji $potongan_gaji): RedirectResponse
     {
+        $this->authorize('update', $potongan_gaji);
+
         $potongan_gaji->update($request->validated());
 
         return redirect()->route('admin.potongan-gaji.index')->with('success', 'Potongan gaji berhasil diperbarui.');
@@ -46,6 +50,8 @@ class PotonganGajiController extends Controller
 
     public function toggle(PotonganGaji $potongan_gaji): RedirectResponse
     {
+        $this->authorize('update', $potongan_gaji);
+
         $potongan_gaji->update(['aktif' => ! $potongan_gaji->aktif]);
 
         return redirect()->route('admin.potongan-gaji.index')->with('success', 'Status potongan gaji berhasil diubah.');
@@ -53,6 +59,8 @@ class PotonganGajiController extends Controller
 
     public function destroy(PotonganGaji $potongan_gaji): RedirectResponse
     {
+        $this->authorize('delete', $potongan_gaji);
+
         $potongan_gaji->delete();
 
         return redirect()->route('admin.potongan-gaji.index')->with('success', 'Potongan gaji berhasil dihapus.');

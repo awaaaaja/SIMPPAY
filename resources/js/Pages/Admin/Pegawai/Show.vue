@@ -1,19 +1,38 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import { useRoutePrefix } from '@/composables/useRoutePrefix.js';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ArrowLeft, Pencil } from '@lucide/vue';
+import { ArrowLeft, Pencil, UserPlus, CheckCircle } from '@lucide/vue';
 
 const prefix = useRoutePrefix();
 
 const props = defineProps({
     pegawai: Object,
     can: Object,
+    roles: Array,
 });
+
+const showAccountModal = ref(false);
+const accountForm = useForm({
+    username: props.pegawai.nik,
+    password: '',
+    role: 'pegawai',
+});
+
+function createAccount() {
+    accountForm.post(route(`${prefix.value}.pegawai.createAccount`, props.pegawai.id), {
+        onSuccess: () => { showAccountModal.value = false; accountForm.reset(); },
+    });
+}
 
 function formatRupiah(val) {
     if (!val) return '-';
@@ -76,11 +95,53 @@ function resolve(obj, path) {
                         <ArrowLeft class="h-4 w-4" /> Kembali
                     </Link>
                 </Button>
-                <Button v-if="can.update" variant="outline" size="sm" as-child>
-                    <Link :href="route(`${prefix}.pegawai.edit`, pegawai.id)">
-                        <Pencil class="h-4 w-4" /> Edit
-                    </Link>
-                </Button>
+                <div class="flex items-center gap-2">
+                    <Dialog v-if="can.update && !pegawai.user" v-model:open="showAccountModal">
+                        <DialogTrigger as-child>
+                            <Button variant="outline" size="sm">
+                                <UserPlus class="h-4 w-4" /> Buat Akun
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Buat Akun Login</DialogTitle>
+                            </DialogHeader>
+                            <form @submit.prevent="createAccount" class="space-y-4">
+                                <div class="space-y-1.5">
+                                    <Label>Username</Label>
+                                    <Input v-model="accountForm.username" placeholder="Default: NIK" />
+                                    <p v-if="accountForm.errors.username" class="text-sm text-destructive">{{ accountForm.errors.username }}</p>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <Label>Password</Label>
+                                    <Input v-model="accountForm.password" type="text" placeholder="Kosongkan untuk default: password123" />
+                                    <p v-if="accountForm.errors.password" class="text-sm text-destructive">{{ accountForm.errors.password }}</p>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <Label>Role</Label>
+                                    <Select v-model="accountForm.role">
+                                        <SelectTrigger class="w-full"><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem v-for="r in roles" :key="r" :value="r">{{ r.charAt(0).toUpperCase() + r.slice(1) }}</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="button" variant="outline" @click="showAccountModal = false">Batal</Button>
+                                    <Button type="submit" :disabled="accountForm.processing">Buat Akun</Button>
+                                </DialogFooter>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
+                    <Badge v-if="pegawai.user" variant="default" class="bg-emerald-100 text-emerald-700">
+                        <CheckCircle class="h-3 w-3 mr-1" /> Akun Aktif
+                    </Badge>
+                    <Button v-if="can.update" variant="outline" size="sm" as-child>
+                        <Link :href="route(`${prefix}.pegawai.edit`, pegawai.id)">
+                            <Pencil class="h-4 w-4" /> Edit
+                        </Link>
+                    </Button>
+                </div>
             </div>
 
             <!-- Profile header -->

@@ -41,12 +41,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('struktural', StrukturalController::class)->except(['show']);
     Route::resource('fungsional', FungsionalController::class)->except(['show']);
     Route::resource('pegawai', PegawaiController::class);
+    Route::post('pegawai/{pegawai}/create-account', [PegawaiController::class, 'createAccount'])->name('pegawai.createAccount');
     Route::get('pegawai-export/export', [PegawaiController::class, 'export'])->name('pegawai.export');
     Route::post('pegawai-export/import', [PegawaiController::class, 'import'])->name('pegawai.import');
 
     // Kehadiran
     Route::get('kehadiran', [KehadiranController::class, 'index'])->name('kehadiran.index');
     Route::post('kehadiran', [KehadiranController::class, 'store'])->name('kehadiran.store');
+    Route::get('kehadiran/{kehadiran}/edit', [KehadiranController::class, 'edit'])->name('kehadiran.edit');
+    Route::put('kehadiran/{kehadiran}', [KehadiranController::class, 'update'])->name('kehadiran.update');
     Route::post('kehadiran/import', [KehadiranController::class, 'import'])->name('kehadiran.import');
     Route::delete('kehadiran/{kehadiran}', [KehadiranController::class, 'destroy'])->name('kehadiran.destroy');
 
@@ -119,12 +122,14 @@ Route::middleware(['auth', 'role:pegawai|tendik'])->prefix('portal')->name('port
     Route::get('/slip-gaji/{detail}/pdf', [PdfController::class, 'slipGaji'])->name('slip-gaji.pdf');
     Route::get('/profile', [PortalProfileController::class, 'edit'])->name('profile');
     Route::put('/profile', [PortalProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [PortalProfileController::class, 'updatePassword'])->name('profile.password.update');
 });
 
 // ─── Profile (all authenticated users) ────────────────────────────────
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

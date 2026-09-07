@@ -15,6 +15,8 @@ import {
     Settings,
     ChevronLeft,
     Menu,
+    User,
+    LogOut,
 } from '@lucide/vue';
 
 const page = usePage();
@@ -61,6 +63,12 @@ const sidebarNav = computed(() => [
             { label: 'Potongan Gaji', route: `${prefix.value}.potongan-gaji.index`, icon: CreditCard },
             { label: 'Tunjangan Gaji', route: `${prefix.value}.tunjangan-gaji.index`, icon: CreditCard },
             { label: 'Proses Payroll', route: `${prefix.value}.payroll-run.index`, icon: FileText },
+        ],
+    },
+    {
+        heading: 'ACCOUNT',
+        items: [
+            { label: 'Profil Saya', route: 'profile.edit', icon: User },
         ],
     },
 ]);
@@ -171,38 +179,39 @@ const logoRoute = computed(() => route(`${prefix.value}.dashboard`));
             </nav>
 
             <!-- User -->
-            <div class="border-t border-gray-100 px-3 py-3">
-                <Dropdown align="top" width="48">
-                    <template #trigger>
-                        <button
-                            :class="[
-                                'flex items-center gap-2.5 w-full rounded-[10px] px-2.5 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition',
-                                sidebarCollapsed && 'justify-center',
-                            ]"
-                        >
-                            <div
-                                class="flex h-8 w-8 items-center justify-center rounded-full bg-[#025AB1]/10 text-[#025AB1] text-xs font-semibold shrink-0"
-                            >
-                                {{ $page.props.auth.user.name?.charAt(0) }}
-                            </div>
-                            <span v-if="!sidebarCollapsed" class="truncate">
-                                {{ $page.props.auth.user.name }}
-                            </span>
-                        </button>
-                    </template>
-                    <template #content>
-                        <DropdownLink :href="route('profile.edit')">
-                            Profile
-                        </DropdownLink>
-                        <DropdownLink
-                            :href="route('logout')"
-                            method="post"
-                            as="button"
-                        >
-                            Log Out
-                        </DropdownLink>
-                    </template>
-                </Dropdown>
+            <div class="border-t border-gray-100 px-3 py-3 space-y-1">
+                <Link :href="route('profile.edit')"
+                    :class="[
+                        'flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-sm font-medium transition',
+                        isActive('profile.edit')
+                            ? 'bg-[#025AB1]/8 text-[#025AB1]'
+                            : 'text-gray-600 hover:bg-gray-50',
+                        sidebarCollapsed && 'justify-center',
+                    ]"
+                >
+                    <div
+                        :class="[
+                            'flex h-8 w-8 items-center justify-center rounded-full shrink-0 transition',
+                            isActive('profile.edit')
+                                ? 'bg-[#025AB1]/10'
+                                : 'bg-gray-100',
+                        ]"
+                    >
+                        <User :class="['h-[18px] w-[18px]', isActive('profile.edit') ? 'text-[#025AB1]' : 'text-gray-400']" :stroke-width="1.75" />
+                    </div>
+                    <span v-if="!sidebarCollapsed">Profil Saya</span>
+                </Link>
+                <Link :href="route('logout')" method="post" as="button"
+                    :class="[
+                        'flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition w-full',
+                        sidebarCollapsed && 'justify-center',
+                    ]"
+                >
+                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 shrink-0">
+                        <LogOut class="h-[18px] w-[18px] text-red-500" :stroke-width="1.75" />
+                    </div>
+                    <span v-if="!sidebarCollapsed">Keluar</span>
+                </Link>
             </div>
         </aside>
 

@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreKehadiranRequest;
 use App\Imports\KehadiranImport;
 use App\Models\Jabatan;
 use App\Models\Kehadiran;
+use App\Models\Pegawai;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,6 +36,7 @@ class KehadiranController extends Controller
         return Inertia::render('Admin/Kehadiran/Index', [
             'kehadirans' => $kehadirans,
             'jabatans' => Jabatan::orderBy('nama_jabatan')->get(['id', 'nama_jabatan']),
+            'pegawais' => Pegawai::orderBy('nama_pegawai')->get(['id', 'nik', 'nama_pegawai']),
             'filters' => $request->only(['periode', 'jabatan_id', 'search']),
             'can' => [
                 'create' => $request->user()->can('create', Kehadiran::class),
@@ -46,6 +48,8 @@ class KehadiranController extends Controller
 
     public function store(StoreKehadiranRequest $request): RedirectResponse
     {
+        $this->authorize('create', Kehadiran::class);
+
         $data = $request->validated();
         $data['periode'] = Carbon::parse($data['periode'])->startOfMonth();
 
@@ -64,8 +68,45 @@ class KehadiranController extends Controller
         return redirect()->route('admin.kehadiran.index')->with('success', 'Data kehadiran berhasil ditambahkan.');
     }
 
+    public function edit(Kehadiran $kehadiran): Response
+    {
+        $this->authorize('update', $kehadiran);
+
+        $kehadiran->load('pegawai');
+
+        return Inertia::render('Admin/Kehadiran/Edit', [
+            'kehadiran' => $kehadiran,
+            'pegawais' => Pegawai::orderBy('nama_pegawai')->get(['id', 'nik', 'nama_pegawai']),
+        ]);
+    }
+
+    public function update(StoreKehadiranRequest $request, Kehadiran $kehadiran): RedirectResponse
+    {
+        $this->authorize('update', $kehadiran);
+
+        $data = $request->validated();
+        $data['periode'] = Carbon::parse($data['periode'])->startOfMonth();
+
+        $existing = Kehadiran::where('pegawai_id', $data['pegawai_id'])
+            ->where('periode', $data['periode'])
+            ->where('id', '!=', $kehadiran->id)
+            ->first();
+
+        if ($existing) {
+            return back()->withErrors([
+                'periode' => 'Data kehadiran untuk pegawai ini pada periode tersebut sudah ada.',
+            ]);
+        }
+
+        $kehadiran->update($data);
+
+        return redirect()->route('admin.kehadiran.index')->with('success', 'Data kehadiran berhasil diperbarui.');
+    }
+
     public function import(Request $request): RedirectResponse
     {
+        $this->authorize('create', Kehadiran::class);
+
         $request->validate([
             'file' => ['required', 'file', 'mimes:xlsx,xls', 'max:10240'],
             'periode' => ['required', 'date_format:Y-m-d'],
@@ -80,6 +121,8 @@ class KehadiranController extends Controller
 
     public function destroy(Kehadiran $kehadiran): RedirectResponse
     {
+        $this->authorize('delete', $kehadiran);
+
         $kehadiran->delete();
 
         return redirect()->route('admin.kehadiran.index')->with('success', 'Data kehadiran berhasil dihapus.');

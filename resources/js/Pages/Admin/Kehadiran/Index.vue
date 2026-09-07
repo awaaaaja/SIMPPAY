@@ -13,13 +13,14 @@ import {
     AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
     AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Plus, Upload, FileDown, FileText, Trash2 } from '@lucide/vue';
+import { Plus, Upload, FileDown, FileText, Trash2, Pencil } from '@lucide/vue';
 
 const prefix = useRoutePrefix();
 
 const props = defineProps({
     kehadirans: Object,
     jabatans: Array,
+    pegawais: Array,
     filters: Object,
     can: Object,
 });
@@ -145,8 +146,15 @@ function doDelete(id) {
                                 </DialogHeader>
                                 <form @submit.prevent="submitCreate" class="space-y-4">
                                     <div class="space-y-1">
-                                        <Label>Pegawai ID</Label>
-                                        <Input v-model="createForm.pegawai_id" type="number" required />
+                                        <Label>Pegawai</Label>
+                                        <Select v-model="createForm.pegawai_id">
+                                            <SelectTrigger class="w-full"><SelectValue placeholder="-- Pilih Pegawai --" /></SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem v-for="p in pegawais" :key="p.id" :value="p.id">
+                                                    {{ p.nama_pegawai }} ({{ p.nik }})
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                         <p v-if="createForm.errors.pegawai_id" class="text-sm text-destructive">{{ createForm.errors.pegawai_id }}</p>
                                     </div>
                                     <div class="space-y-1">
@@ -235,7 +243,12 @@ function doDelete(id) {
                             <TableCell class="text-right tabular-nums">{{ k.alpha }}</TableCell>
                             <TableCell class="text-muted-foreground">{{ formatPeriode(k.periode) }}</TableCell>
                             <TableCell v-if="can.create" class="text-right">
-                                <AlertDialog>
+                                <div class="flex items-center justify-end gap-1">
+                                    <Link v-if="can.update" :href="route(`${prefix}.kehadiran.edit`, k.id)"
+                                        class="inline-flex items-center justify-center h-8 w-8 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition">
+                                        <Pencil class="h-3.5 w-3.5" />
+                                    </Link>
+                                    <AlertDialog v-if="can.delete">
                                     <AlertDialogTrigger as-child>
                                         <Button variant="destructive" size="icon-sm">
                                             <Trash2 class="h-3.5 w-3.5" />
@@ -253,7 +266,8 @@ function doDelete(id) {
                                             <AlertDialogAction @click="doDelete(k.id)">Hapus</AlertDialogAction>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
-                                </AlertDialog>
+                                    </AlertDialog>
+                                </div>
                             </TableCell>
                         </TableRow>
                         <TableRow v-if="kehadirans.data.length === 0">

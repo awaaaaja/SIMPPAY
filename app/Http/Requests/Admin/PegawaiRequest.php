@@ -57,6 +57,10 @@ class PegawaiRequest extends FormRequest
             'nama_ibu' => ['nullable', 'string', 'max:255'],
             'masa_jabatan' => ['nullable', 'string', 'max:255'],
             'tgl_sk_jabatan' => ['nullable', 'date'],
+            'create_user' => ['nullable', 'boolean'],
+            'user_username' => ['nullable', 'string', 'max:255', 'unique:users,username'],
+            'user_password' => ['nullable', 'string', 'min:8'],
+            'user_role' => ['nullable', 'in:pegawai,tendik,bpsdm'],
         ];
     }
 }

@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { useRoutePrefix } from '@/composables/useRoutePrefix.js';
+import { ref } from 'vue';
 
 const prefix = useRoutePrefix();
 
@@ -15,6 +16,8 @@ const props = defineProps({
     strukturals: Array,
     fungsionals: Array,
 });
+
+const createUser = ref(false);
 
 const form = useForm({
     nik: '',
@@ -52,6 +55,10 @@ const form = useForm({
     tgl_sk_jabatan: '',
     photo: null,
     foto_sk: null,
+    create_user: false,
+    user_username: '',
+    user_password: '',
+    user_role: 'pegawai',
 });
 
 function submit() {
@@ -232,6 +239,39 @@ function submit() {
                                 <Label for="nama_ibu">Nama Ibu</Label>
                                 <Input id="nama_ibu" v-model="form.nama_ibu" type="text" class="mt-1" />
                                 <p v-if="form.errors.nama_ibu" class="mt-1 text-sm text-destructive">{{ form.errors.nama_ibu }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Akun User -->
+                        <h3 class="pt-4 text-lg font-semibold text-gray-800">Akun User</h3>
+                        <div class="space-y-4">
+                            <label class="flex items-center gap-2">
+                                <input type="checkbox" v-model="createUser" @change="form.create_user = createUser"
+                                    class="h-4 w-4 rounded border-gray-300 text-[#025AB1] focus:ring-[#025AB1]" />
+                                <span class="text-sm text-gray-700">Buat akun login untuk pegawai ini</span>
+                            </label>
+                            <div v-if="createUser" class="grid grid-cols-2 gap-4 pl-6 border-l-2 border-[#025AB1]/20">
+                                <div>
+                                    <Label for="user_username">Username</Label>
+                                    <Input id="user_username" v-model="form.user_username" type="text" class="mt-1" placeholder="Default: NIK" />
+                                    <p v-if="form.errors.user_username" class="mt-1 text-sm text-destructive">{{ form.errors.user_username }}</p>
+                                </div>
+                                <div>
+                                    <Label for="user_password">Password</Label>
+                                    <Input id="user_password" v-model="form.user_password" type="text" class="mt-1" placeholder="Default: password123" />
+                                    <p v-if="form.errors.user_password" class="mt-1 text-sm text-destructive">{{ form.errors.user_password }}</p>
+                                </div>
+                                <div>
+                                    <Label>Role</Label>
+                                    <Select v-model="form.user_role">
+                                        <SelectTrigger class="mt-1 w-full"><SelectValue /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="pegawai">Pegawai</SelectItem>
+                                            <SelectItem value="tendik">Tendik</SelectItem>
+                                            <SelectItem value="bpsdm">BPSDM</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                         </div>
 

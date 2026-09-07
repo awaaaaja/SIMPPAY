@@ -38,6 +38,8 @@ class TunjanganGajiController extends Controller
 
     public function store(StoreTunjanganGajiRequest $request): RedirectResponse
     {
+        $this->authorize('create', TunjanganGaji::class);
+
         TunjanganGaji::create($request->validated());
 
         return redirect()->route('admin.tunjangan-gaji.index')->with('success', 'Tunjangan gaji berhasil ditambahkan.');
@@ -45,6 +47,8 @@ class TunjanganGajiController extends Controller
 
     public function update(StoreTunjanganGajiRequest $request, TunjanganGaji $tunjangan_gaji): RedirectResponse
     {
+        $this->authorize('update', $tunjangan_gaji);
+
         $tunjangan_gaji->update($request->validated());
 
         return redirect()->route('admin.tunjangan-gaji.index')->with('success', 'Tunjangan gaji berhasil diperbarui.');
@@ -52,6 +56,8 @@ class TunjanganGajiController extends Controller
 
     public function toggle(TunjanganGaji $tunjangan_gaji): RedirectResponse
     {
+        $this->authorize('update', $tunjangan_gaji);
+
         $tunjangan_gaji->update(['aktif' => ! $tunjangan_gaji->aktif]);
 
         return redirect()->route('admin.tunjangan-gaji.index')->with('success', 'Status tunjangan gaji berhasil diubah.');
@@ -59,6 +65,8 @@ class TunjanganGajiController extends Controller
 
     public function destroy(TunjanganGaji $tunjangan_gaji): RedirectResponse
     {
+        $this->authorize('delete', $tunjangan_gaji);
+
         $tunjangan_gaji->delete();
 
         return redirect()->route('admin.tunjangan-gaji.index')->with('success', 'Tunjangan gaji berhasil dihapus.');

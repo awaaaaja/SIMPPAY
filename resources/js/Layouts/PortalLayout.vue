@@ -129,6 +129,13 @@ function isActive(routeName) {
                                 </Link>
                             </li>
                         </ul>
+                        <div class="mt-auto pt-4 border-t border-gray-100">
+                            <Link :href="route('logout')" method="post" as="button"
+                                class="flex items-center gap-3 rounded-[10px] p-2.5 text-sm font-medium text-red-600 hover:bg-red-50 w-full transition-colors">
+                                <LogOut class="h-5 w-5 shrink-0" :stroke-width="1.75" />
+                                Keluar
+                            </Link>
+                        </div>
                     </nav>
                 </div>
             </div>

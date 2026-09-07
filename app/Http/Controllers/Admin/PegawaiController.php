@@ -10,9 +10,12 @@ use App\Models\Fungsional;
 use App\Models\Jabatan;
 use App\Models\Pegawai;
 use App\Models\Struktural;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Inertia\Response;
 use Maatwebsite\Excel\Facades\Excel;
@@ -64,6 +67,8 @@ class PegawaiController extends Controller
 
     public function store(PegawaiRequest $request): RedirectResponse
     {
+        $this->authorize('create', Pegawai::class);
+
         $data = $request->validated();
 
         if ($request->hasFile('photo')) {
@@ -73,7 +78,18 @@ class PegawaiController extends Controller
             $data['foto_sk'] = $request->file('foto_sk')->store('pegawai/foto-sk', 'public');
         }
 
-        Pegawai::create($data);
+        $pegawai = Pegawai::create($data);
+
+        if ($request->boolean('create_user')) {
+            $user = User::create([
+                'name' => $pegawai->nama_pegawai,
+                'username' => $request->input('user_username', $pegawai->nik),
+                'email' => $pegawai->email,
+                'password' => Hash::make($request->input('user_password', 'password123')),
+            ]);
+            $user->assignRole($request->input('user_role', 'pegawai'));
+            $pegawai->update(['user_id' => $user->id]);
+        }
 
         return redirect()->route('admin.pegawai.index')->with('success', 'Pegawai berhasil ditambahkan.');
     }
@@ -90,6 +106,7 @@ class PegawaiController extends Controller
                 'update' => $request->user()->can('update', $pegawai),
                 'delete' => $request->user()->can('delete', $pegawai),
             ],
+            'roles' => ['pegawai', 'tendik', 'bpsdm'],
         ]);
     }
 
@@ -143,6 +160,33 @@ class PegawaiController extends Controller
         $pegawai->delete();
 
         return redirect()->route('admin.pegawai.index')->with('success', 'Pegawai berhasil dihapus.');
+    }
+
+    public function createAccount(Request $request, Pegawai $pegawai): RedirectResponse
+    {
+        $this->authorize('update', $pegawai);
+
+        $validated = $request->validate([
+            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
+            'password' => ['nullable', 'string', 'min:8'],
+            'role' => ['required', 'in:pegawai,tendik,bpsdm'],
+        ]);
+
+        if ($pegawai->user) {
+            return back()->withErrors(['username' => 'Pegawai ini sudah memiliki akun.']);
+        }
+
+        $user = User::create([
+            'name' => $pegawai->nama_pegawai,
+            'username' => $validated['username'],
+            'email' => $pegawai->email,
+            'password' => Hash::make($validated['password'] ?: 'password123'),
+        ]);
+
+        $user->assignRole($validated['role']);
+        $pegawai->update(['user_id' => $user->id]);
+
+        return back()->with('success', 'Akun berhasil dibuat untuk pegawai.');
     }
 
     public function export()
