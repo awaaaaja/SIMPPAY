@@ -1,8 +1,17 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { useRoutePrefix } from '@/composables/useRoutePrefix.js';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Plus, Pencil, Trash2 } from '@lucide/vue';
 
 const prefix = useRoutePrefix();
 
@@ -17,11 +26,8 @@ const props = defineProps({
 const targetTipe = ref(props.filters.target_tipe || '');
 
 function applyFilter() {
-    router.get(route(`${prefix.value}.tunjangan-gaji.index`), {
-        target_tipe: targetTipe.value,
-    }, {
-        preserveState: true,
-        replace: true,
+    router.get(route(`${prefix.value}.tunjangan-gaji.index`), { target_tipe: targetTipe.value }, {
+        preserveState: true, replace: true,
     });
 }
 
@@ -59,18 +65,11 @@ function openEdit(tunjangan) {
 function submitForm() {
     if (editingTunjangan.value) {
         createForm.patch(route(`${prefix.value}.tunjangan-gaji.update`, editingTunjangan.value.id), {
-            onSuccess: () => {
-                showCreateModal.value = false;
-                createForm.reset();
-                editingTunjangan.value = null;
-            },
+            onSuccess: () => { showCreateModal.value = false; createForm.reset(); editingTunjangan.value = null; },
         });
     } else {
         createForm.post(route(`${prefix.value}.tunjangan-gaji.store`), {
-            onSuccess: () => {
-                showCreateModal.value = false;
-                createForm.reset();
-            },
+            onSuccess: () => { showCreateModal.value = false; createForm.reset(); },
         });
     }
 }
@@ -79,10 +78,8 @@ function toggleAktif(id) {
     router.patch(route(`${prefix.value}.tunjangan-gaji.toggle`, id), {}, { preserveState: true });
 }
 
-function destroy(id) {
-    if (confirm('Yakin ingin menghapus tunjangan gaji ini?')) {
-        router.delete(route(`${prefix.value}.tunjangan-gaji.destroy`, id));
-    }
+function doDelete(id) {
+    router.delete(route(`${prefix.value}.tunjangan-gaji.destroy`, id));
 }
 
 function formatRupiah(val) {
@@ -100,158 +97,149 @@ function targetLabel(item) {
     <Head title="Tunjangan Gaji" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div class="flex items-center justify-between">
-                <h2 class="font-semibold text-lg text-gray-800 leading-tight">Tunjangan Gaji</h2>
-                <button v-if="can.create" @click="openCreate"
-                    class="inline-flex items-center px-4 py-2 bg-[#025AB1] text-white text-sm font-medium rounded-[10px] hover:bg-[#014A96] transition-colors">
-                    <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Tambah Tunjangan
-                </button>
+        <div class="px-4 pt-6 pb-2 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-semibold text-gray-800">Tunjangan Gaji</h1>
+                <Button v-if="can.create" @click="openCreate"><Plus class="h-4 w-4" /> Tambah Tunjangan</Button>
             </div>
-        </template>
 
-        <div class="py-6">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <!-- Filter -->
-                <div class="mb-4 flex items-center gap-3">
-                    <select v-model="targetTipe" @change="applyFilter"
-                        class="rounded-[10px] border-gray-300 text-sm focus:border-[#025AB1] focus:ring-[#025AB1]">
-                        <option value="">Semua Target</option>
-                        <option value="semua">Semua Pegawai</option>
-                        <option value="jabatan">Per Jabatan</option>
-                        <option value="pegawai">Per Pegawai</option>
-                    </select>
-                </div>
+            <!-- Filter -->
+            <div class="mb-4">
+                <Select v-model="targetTipe" @update:model-value="applyFilter">
+                    <SelectTrigger class="w-48"><SelectValue placeholder="Semua Target" /></SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="">Semua Target</SelectItem>
+                        <SelectItem value="semua">Semua Pegawai</SelectItem>
+                        <SelectItem value="jabatan">Per Jabatan</SelectItem>
+                        <SelectItem value="pegawai">Per Pegawai</SelectItem>
+                    </SelectContent>
+                </Select>
+            </div>
 
-                <div class="bg-white rounded-[16px] shadow-[0_1px_2px_rgba(0,0,0,.04),0_8px_24px_rgba(0,0,0,.04)] overflow-hidden">
-                    <table class="min-w-full divide-y divide-gray-100">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Tunjangan</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Target</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Nominal</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-50">
-                            <tr v-for="t in tunjangans.data" :key="t.id" class="hover:bg-[#F8FAF8] transition-colors">
-                                <td class="px-6 py-4 text-sm text-gray-800">{{ t.nama_tunjangan }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-500">{{ targetLabel(t) }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-800 text-right font-variant-numeric:tabular-nums">
-                                    {{ formatRupiah(t.nominal) }}
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <button @click="toggleAktif(t.id)"
-                                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors"
-                                        :class="t.aktif ? 'bg-[#025AB1]' : 'bg-gray-300'">
-                                        <span class="inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform"
-                                            :class="t.aktif ? 'translate-x-[18px]' : 'translate-x-[3px]'" />
-                                    </button>
-                                </td>
-                                <td class="px-6 py-4 text-right space-x-2">
-                                    <button v-if="can.update" @click="openEdit(t)"
-                                        class="text-[#025AB1] hover:text-[#014A96] text-sm font-medium">
-                                        Edit
-                                    </button>
-                                    <button v-if="can.delete" @click="destroy(t.id)"
-                                        class="text-red-500 hover:text-red-700 text-sm font-medium">
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr v-if="tunjangans.data.length === 0">
-                                <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-400">
-                                    Belum ada data tunjangan gaji.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="bg-white rounded-[12px] overflow-hidden" style="box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Nama Tunjangan</TableHead>
+                            <TableHead>Target</TableHead>
+                            <TableHead class="text-right">Nominal</TableHead>
+                            <TableHead class="text-center">Status</TableHead>
+                            <TableHead class="text-right">Aksi</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow v-for="t in tunjangans.data" :key="t.id">
+                            <TableCell class="font-medium">{{ t.nama_tunjangan }}</TableCell>
+                            <TableCell class="text-muted-foreground">{{ targetLabel(t) }}</TableCell>
+                            <TableCell class="text-right tabular-nums">{{ formatRupiah(t.nominal) }}</TableCell>
+                            <TableCell class="text-center">
+                                <Switch :checked="t.aktif" @update:checked="toggleAktif(t.id)" />
+                            </TableCell>
+                            <TableCell class="text-right">
+                                <div class="flex items-center justify-end gap-1">
+                                    <Button v-if="can.update" variant="ghost" size="icon-sm" @click="openEdit(t)">
+                                        <Pencil class="h-3.5 w-3.5" />
+                                    </Button>
+                                    <AlertDialog v-if="can.delete">
+                                        <AlertDialogTrigger as-child>
+                                            <Button variant="destructive" size="icon-sm"><Trash2 class="h-3.5 w-3.5" /></Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Hapus Tunjangan</AlertDialogTitle>
+                                                <AlertDialogDescription>Yakin ingin menghapus tunjangan gaji ini?</AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Batal</AlertDialogCancel>
+                                                <AlertDialogAction @click="doDelete(t.id)">Hapus</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow v-if="tunjangans.data.length === 0">
+                            <TableCell colspan="5" class="text-center py-8 text-muted-foreground">Belum ada data tunjangan gaji.</TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </div>
 
-                    <div v-if="tunjangans.last_page > 1" class="px-6 py-3 border-t border-gray-100 flex items-center justify-between">
-                        <p class="text-sm text-gray-500">
-                            Menampilkan {{ tunjangans.from }}-{{ tunjangans.to }} dari {{ tunjangans.total }} data
-                        </p>
-                        <div class="flex gap-1">
-                            <button v-for="link in tunjangans.links" :key="link.url"
-                                @click="link.url && router.get(link.url, {}, { preserveState: true, replace: true })"
-                                :disabled="!link.url"
-                                class="px-3 py-1 text-sm rounded-[10px] transition-colors"
-                                :class="link.active ? 'bg-[#025AB1] text-white' : 'text-gray-600 hover:bg-gray-100'"
-                                v-html="link.label" />
-                        </div>
-                    </div>
-                </div>
+            <div v-if="tunjangans.last_page > 1" class="mt-4 flex items-center justify-between">
+                <p class="text-sm text-muted-foreground">Menampilkan {{ tunjangans.from }}-{{ tunjangans.to }} dari {{ tunjangans.total }} data</p>
+                <nav class="flex items-center gap-1">
+                    <template v-for="link in tunjangans.links" :key="link.url">
+                        <Button v-if="link.url" variant="ghost" size="sm"
+                            :class="link.active ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''"
+                            @click="router.get(link.url, {}, { preserveState: true, replace: true })" v-html="link.label" />
+                        <span v-else class="px-3 py-2 text-sm text-gray-400">...</span>
+                    </template>
+                </nav>
             </div>
         </div>
 
         <!-- Create/Edit Modal -->
-        <div v-if="showCreateModal" class="fixed inset-0 z-50 overflow-y-auto" @click.self="showCreateModal = false">
-            <div class="fixed inset-0 bg-black/30" @click="showCreateModal = false" />
-            <div class="flex min-h-full items-center justify-center p-4">
-                <div class="bg-white rounded-[18px] shadow-xl w-full max-w-md p-6 relative">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
-                        {{ editingTunjangan ? 'Edit Tunjangan Gaji' : 'Tambah Tunjangan Gaji' }}
-                    </h3>
-                    <form @submit.prevent="submitForm" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Tunjangan</label>
-                            <input v-model="createForm.nama_tunjangan" type="text"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm" />
-                            <p v-if="createForm.errors.nama_tunjangan" class="text-red-500 text-xs mt-1">{{ createForm.errors.nama_tunjangan }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Target</label>
-                            <select v-model="createForm.target_tipe"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm">
-                                <option value="semua">Semua Pegawai</option>
-                                <option value="jabatan">Per Jabatan</option>
-                                <option value="pegawai">Per Pegawai</option>
-                            </select>
-                        </div>
-                        <div v-if="createForm.target_tipe === 'jabatan'">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan</label>
-                            <select v-model="createForm.jabatan_id"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm">
-                                <option value="">Pilih Jabatan</option>
-                                <option v-for="j in jabatans" :key="j.id" :value="j.id">{{ j.nama_jabatan }}</option>
-                            </select>
-                            <p v-if="createForm.errors.jabatan_id" class="text-red-500 text-xs mt-1">{{ createForm.errors.jabatan_id }}</p>
-                        </div>
-                        <div v-if="createForm.target_tipe === 'pegawai'">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Pegawai</label>
-                            <select v-model="createForm.pegawai_id"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm">
-                                <option value="">Pilih Pegawai</option>
-                                <option v-for="p in pegawais" :key="p.id" :value="p.id">{{ p.nama_pegawai }} ({{ p.nik }})</option>
-                            </select>
-                            <p v-if="createForm.errors.pegawai_id" class="text-red-500 text-xs mt-1">{{ createForm.errors.pegawai_id }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nominal (Rp)</label>
-                            <input v-model.number="createForm.nominal" type="number" step="0.01" min="0"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm" />
-                            <p v-if="createForm.errors.nominal" class="text-red-500 text-xs mt-1">{{ createForm.errors.nominal }}</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <input v-model="createForm.aktif" type="checkbox" id="aktif"
-                                class="rounded border-gray-300 text-[#025AB1] focus:ring-[#025AB1]" />
-                            <label for="aktif" class="text-sm text-gray-700">Aktif</label>
-                        </div>
-                        <div class="flex justify-end gap-3 pt-2">
-                            <button type="button" @click="showCreateModal = false"
-                                class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 rounded-[10px] hover:bg-gray-100 transition-colors">
-                                Batal
-                            </button>
-                            <button type="submit" :disabled="createForm.processing"
-                                class="px-4 py-2 text-sm font-medium text-white bg-[#025AB1] rounded-[10px] hover:bg-[#014A96] transition-colors disabled:opacity-50">
-                                {{ createForm.processing ? 'Menyimpan...' : 'Simpan' }}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+        <Dialog v-model:open="showCreateModal">
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{{ editingTunjangan ? 'Edit Tunjangan Gaji' : 'Tambah Tunjangan Gaji' }}</DialogTitle>
+                </DialogHeader>
+                <form @submit.prevent="submitForm" class="space-y-4">
+                    <div class="space-y-1">
+                        <Label>Nama Tunjangan</Label>
+                        <Input v-model="createForm.nama_tunjangan" type="text" />
+                        <p v-if="createForm.errors.nama_tunjangan" class="text-sm text-destructive">{{ createForm.errors.nama_tunjangan }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <Label>Target</Label>
+                        <Select v-model="createForm.target_tipe">
+                            <SelectTrigger><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="semua">Semua Pegawai</SelectItem>
+                                <SelectItem value="jabatan">Per Jabatan</SelectItem>
+                                <SelectItem value="pegawai">Per Pegawai</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div v-if="createForm.target_tipe === 'jabatan'" class="space-y-1">
+                        <Label>Jabatan</Label>
+                        <Select v-model="createForm.jabatan_id">
+                            <SelectTrigger><SelectValue placeholder="Pilih Jabatan" /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="">Pilih Jabatan</SelectItem>
+                                <SelectItem v-for="j in jabatans" :key="j.id" :value="String(j.id)">{{ j.nama_jabatan }}</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <p v-if="createForm.errors.jabatan_id" class="text-sm text-destructive">{{ createForm.errors.jabatan_id }}</p>
+                    </div>
+                    <div v-if="createForm.target_tipe === 'pegawai'" class="space-y-1">
+                        <Label>Pegawai</Label>
+                        <Select v-model="createForm.pegawai_id">
+                            <SelectTrigger><SelectValue placeholder="Pilih Pegawai" /></SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="">Pilih Pegawai</SelectItem>
+                                <SelectItem v-for="p in pegawais" :key="p.id" :value="String(p.id)">{{ p.nama_pegawai }} ({{ p.nik }})</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <p v-if="createForm.errors.pegawai_id" class="text-sm text-destructive">{{ createForm.errors.pegawai_id }}</p>
+                    </div>
+                    <div class="space-y-1">
+                        <Label>Nominal (Rp)</Label>
+                        <Input v-model.number="createForm.nominal" type="number" step="0.01" min="0" />
+                        <p v-if="createForm.errors.nominal" class="text-sm text-destructive">{{ createForm.errors.nominal }}</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <Switch id="aktif" :checked="createForm.aktif" @update:checked="createForm.aktif = $event" />
+                        <Label for="aktif" class="cursor-pointer">Aktif</Label>
+                    </div>
+                    <DialogFooter>
+                        <Button type="button" variant="outline" @click="showCreateModal = false">Batal</Button>
+                        <Button type="submit" :disabled="createForm.processing">
+                            {{ createForm.processing ? 'Menyimpan...' : 'Simpan' }}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
     </AuthenticatedLayout>
 </template>

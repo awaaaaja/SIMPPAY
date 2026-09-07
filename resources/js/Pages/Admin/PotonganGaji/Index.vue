@@ -3,6 +3,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { useRoutePrefix } from '@/composables/useRoutePrefix.js';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Plus, Pencil, Trash2 } from '@lucide/vue';
 
 const prefix = useRoutePrefix();
 
@@ -43,18 +53,11 @@ function openEdit(potongan) {
 function submitForm() {
     if (editingPotongan.value) {
         createForm.patch(route(`${prefix.value}.potongan-gaji.update`, editingPotongan.value.id), {
-            onSuccess: () => {
-                showCreateModal.value = false;
-                createForm.reset();
-                editingPotongan.value = null;
-            },
+            onSuccess: () => { showCreateModal.value = false; createForm.reset(); editingPotongan.value = null; },
         });
     } else {
         createForm.post(route(`${prefix.value}.potongan-gaji.store`), {
-            onSuccess: () => {
-                showCreateModal.value = false;
-                createForm.reset();
-            },
+            onSuccess: () => { showCreateModal.value = false; createForm.reset(); },
         });
     }
 }
@@ -63,10 +66,8 @@ function toggleAktif(id) {
     router.patch(route(`${prefix.value}.potongan-gaji.toggle`, id), {}, { preserveState: true });
 }
 
-function destroy(id) {
-    if (confirm('Yakin ingin menghapus potongan gaji ini?')) {
-        router.delete(route(`${prefix.value}.potongan-gaji.destroy`, id));
-    }
+function doDelete(id) {
+    router.delete(route(`${prefix.value}.potongan-gaji.destroy`, id));
 }
 
 function formatRupiah(val) {
@@ -78,143 +79,126 @@ function formatRupiah(val) {
     <Head title="Potongan Gaji" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div class="flex items-center justify-between">
-                <h2 class="font-semibold text-lg text-gray-800 leading-tight">Potongan Gaji</h2>
-                <button v-if="can.create" @click="openCreate"
-                    class="inline-flex items-center px-4 py-2 bg-[#025AB1] text-white text-sm font-medium rounded-[10px] hover:bg-[#014A96] transition-colors">
-                    <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Tambah Potongan
-                </button>
+        <div class="px-4 pt-6 pb-2 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-semibold text-gray-800">Potongan Gaji</h1>
+                <Button v-if="can.create" @click="openCreate"><Plus class="h-4 w-4" /> Tambah Potongan</Button>
             </div>
-        </template>
 
-        <div class="py-6">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="bg-white rounded-[16px] shadow-[0_1px_2px_rgba(0,0,0,.04),0_8px_24px_rgba(0,0,0,.04)] overflow-hidden">
-                    <table class="min-w-full divide-y divide-gray-100">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Potongan</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Alpha Penalty</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-50">
-                            <tr v-for="p in potongans.data" :key="p.id" class="hover:bg-[#F8FAF8] transition-colors">
-                                <td class="px-6 py-4 text-sm text-gray-800">{{ p.nama_potongan }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-500 capitalize">{{ p.tipe }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-800 text-right font-variant-numeric:tabular-nums">
-                                    {{ p.tipe === 'persentase' ? p.nilai + '%' : formatRupiah(p.nilai) }}
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <span v-if="p.is_alpha_penalty"
-                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-[#025AB1]/10 text-[#025AB1]">
-                                        Ya
-                                    </span>
-                                    <span v-else class="text-gray-400 text-xs">-</span>
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    <button @click="toggleAktif(p.id)"
-                                        class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors"
-                                        :class="p.aktif ? 'bg-[#025AB1]' : 'bg-gray-300'">
-                                        <span class="inline-block h-3.5 w-3.5 rounded-full bg-white transition-transform"
-                                            :class="p.aktif ? 'translate-x-[18px]' : 'translate-x-[3px]'" />
-                                    </button>
-                                </td>
-                                <td class="px-6 py-4 text-right space-x-2">
-                                    <button v-if="can.update" @click="openEdit(p)"
-                                        class="text-[#025AB1] hover:text-[#014A96] text-sm font-medium">
-                                        Edit
-                                    </button>
-                                    <button v-if="can.delete" @click="destroy(p.id)"
-                                        class="text-red-500 hover:text-red-700 text-sm font-medium">
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr v-if="potongans.data.length === 0">
-                                <td colspan="6" class="px-6 py-8 text-center text-sm text-gray-400">
-                                    Belum ada data potongan gaji.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="bg-white rounded-[12px] overflow-hidden" style="box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.04);">
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>Nama Potongan</TableHead>
+                            <TableHead>Tipe</TableHead>
+                            <TableHead class="text-right">Nilai</TableHead>
+                            <TableHead class="text-center">Alpha Penalty</TableHead>
+                            <TableHead class="text-center">Status</TableHead>
+                            <TableHead class="text-right">Aksi</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        <TableRow v-for="p in potongans.data" :key="p.id">
+                            <TableCell class="font-medium">{{ p.nama_potongan }}</TableCell>
+                            <TableCell class="capitalize text-muted-foreground">{{ p.tipe }}</TableCell>
+                            <TableCell class="text-right tabular-nums">
+                                {{ p.tipe === 'persentase' ? p.nilai + '%' : formatRupiah(p.nilai) }}
+                            </TableCell>
+                            <TableCell class="text-center">
+                                <Badge v-if="p.is_alpha_penalty" variant="default" class="text-xs">Ya</Badge>
+                                <span v-else class="text-muted-foreground text-xs">-</span>
+                            </TableCell>
+                            <TableCell class="text-center">
+                                <Switch :checked="p.aktif" @update:checked="toggleAktif(p.id)" />
+                            </TableCell>
+                            <TableCell class="text-right">
+                                <div class="flex items-center justify-end gap-1">
+                                    <Button v-if="can.update" variant="ghost" size="icon-sm" @click="openEdit(p)">
+                                        <Pencil class="h-3.5 w-3.5" />
+                                    </Button>
+                                    <AlertDialog v-if="can.delete">
+                                        <AlertDialogTrigger as-child>
+                                            <Button variant="destructive" size="icon-sm"><Trash2 class="h-3.5 w-3.5" /></Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Hapus Potongan</AlertDialogTitle>
+                                                <AlertDialogDescription>Yakin ingin menghapus potongan gaji ini?</AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Batal</AlertDialogCancel>
+                                                <AlertDialogAction @click="doDelete(p.id)">Hapus</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                        <TableRow v-if="potongans.data.length === 0">
+                            <TableCell colspan="6" class="text-center py-8 text-muted-foreground">Belum ada data potongan gaji.</TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </div>
 
-                    <div v-if="potongans.last_page > 1" class="px-6 py-3 border-t border-gray-100 flex items-center justify-between">
-                        <p class="text-sm text-gray-500">
-                            Menampilkan {{ potongans.from }}-{{ potongans.to }} dari {{ potongans.total }} data
-                        </p>
-                        <div class="flex gap-1">
-                            <button v-for="link in potongans.links" :key="link.url"
-                                @click="link.url && router.get(link.url, {}, { preserveState: true, replace: true })"
-                                :disabled="!link.url"
-                                class="px-3 py-1 text-sm rounded-[10px] transition-colors"
-                                :class="link.active ? 'bg-[#025AB1] text-white' : 'text-gray-600 hover:bg-gray-100'"
-                                v-html="link.label" />
-                        </div>
-                    </div>
-                </div>
+            <div v-if="potongans.last_page > 1" class="mt-4 flex items-center justify-between">
+                <p class="text-sm text-muted-foreground">Menampilkan {{ potongans.from }}-{{ potongans.to }} dari {{ potongans.total }} data</p>
+                <nav class="flex items-center gap-1">
+                    <template v-for="link in potongans.links" :key="link.url">
+                        <Button v-if="link.url" variant="ghost" size="sm"
+                            :class="link.active ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''"
+                            @click="router.get(link.url, {}, { preserveState: true, replace: true })" v-html="link.label" />
+                        <span v-else class="px-3 py-2 text-sm text-gray-400">...</span>
+                    </template>
+                </nav>
             </div>
         </div>
 
         <!-- Create/Edit Modal -->
-        <div v-if="showCreateModal" class="fixed inset-0 z-50 overflow-y-auto" @click.self="showCreateModal = false">
-            <div class="fixed inset-0 bg-black/30" @click="showCreateModal = false" />
-            <div class="flex min-h-full items-center justify-center p-4">
-                <div class="bg-white rounded-[18px] shadow-xl w-full max-w-md p-6 relative">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-4">
-                        {{ editingPotongan ? 'Edit Potongan Gaji' : 'Tambah Potongan Gaji' }}
-                    </h3>
-                    <form @submit.prevent="submitForm" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Potongan</label>
-                            <input v-model="createForm.nama_potongan" type="text"
-                                class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm" />
-                            <p v-if="createForm.errors.nama_potongan" class="text-red-500 text-xs mt-1">{{ createForm.errors.nama_potongan }}</p>
+        <Dialog v-model:open="showCreateModal">
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>{{ editingPotongan ? 'Edit Potongan Gaji' : 'Tambah Potongan Gaji' }}</DialogTitle>
+                </DialogHeader>
+                <form @submit.prevent="submitForm" class="space-y-4">
+                    <div class="space-y-1">
+                        <Label>Nama Potongan</Label>
+                        <Input v-model="createForm.nama_potongan" type="text" />
+                        <p v-if="createForm.errors.nama_potongan" class="text-sm text-destructive">{{ createForm.errors.nama_potongan }}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <Label>Tipe</Label>
+                            <Select v-model="createForm.tipe">
+                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="nominal">Nominal (Rp)</SelectItem>
+                                    <SelectItem value="persentase">Persentase (%)</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Tipe</label>
-                                <select v-model="createForm.tipe"
-                                    class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm">
-                                    <option value="nominal">Nominal (Rp)</option>
-                                    <option value="persentase">Persentase (%)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nilai</label>
-                                <input v-model.number="createForm.nilai" type="number" step="0.01" min="0"
-                                    class="w-full rounded-[10px] border-gray-300 focus:border-[#025AB1] focus:ring-[#025AB1] text-sm" />
-                                <p v-if="createForm.errors.nilai" class="text-red-500 text-xs mt-1">{{ createForm.errors.nilai }}</p>
-                            </div>
+                        <div class="space-y-1">
+                            <Label>Nilai</Label>
+                            <Input v-model.number="createForm.nilai" type="number" step="0.01" min="0" />
+                            <p v-if="createForm.errors.nilai" class="text-sm text-destructive">{{ createForm.errors.nilai }}</p>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <input v-model="createForm.is_alpha_penalty" type="checkbox" id="is_alpha"
-                                class="rounded border-gray-300 text-[#025AB1] focus:ring-[#025AB1]" />
-                            <label for="is_alpha" class="text-sm text-gray-700">Alpha Penalty (potongan khusus alpha)</label>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <input v-model="createForm.aktif" type="checkbox" id="aktif"
-                                class="rounded border-gray-300 text-[#025AB1] focus:ring-[#025AB1]" />
-                            <label for="aktif" class="text-sm text-gray-700">Aktif</label>
-                        </div>
-                        <div class="flex justify-end gap-3 pt-2">
-                            <button type="button" @click="showCreateModal = false"
-                                class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 rounded-[10px] hover:bg-gray-100 transition-colors">
-                                Batal
-                            </button>
-                            <button type="submit" :disabled="createForm.processing"
-                                class="px-4 py-2 text-sm font-medium text-white bg-[#025AB1] rounded-[10px] hover:bg-[#014A96] transition-colors disabled:opacity-50">
-                                {{ createForm.processing ? 'Menyimpan...' : 'Simpan' }}
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <Switch id="is_alpha" :checked="createForm.is_alpha_penalty" @update:checked="createForm.is_alpha_penalty = $event" />
+                        <Label for="is_alpha" class="cursor-pointer">Alpha Penalty (potongan khusus alpha)</Label>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <Switch id="aktif" :checked="createForm.aktif" @update:checked="createForm.aktif = $event" />
+                        <Label for="aktif" class="cursor-pointer">Aktif</Label>
+                    </div>
+                    <DialogFooter>
+                        <Button type="button" variant="outline" @click="showCreateModal = false">Batal</Button>
+                        <Button type="submit" :disabled="createForm.processing">
+                            {{ createForm.processing ? 'Menyimpan...' : 'Simpan' }}
+                        </Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
     </AuthenticatedLayout>
 </template>
