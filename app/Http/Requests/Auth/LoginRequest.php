@@ -87,21 +87,20 @@ class LoginRequest extends FormRequest
     /**
      * Verify legacy CI3 password against stored hash.
      *
-     * Asumsi (dokumentasi wajib verifikasi ke Yang Mulia):
-     * - CI3 memakai md5($password) — paling umum di CI3 lama.
-     * - Kalau bukan md5, fallback ke plain text comparison.
+     * Only md5 is supported for legacy migration. Plain text passwords
+     * are NOT supported — users must reset their password via admin.
      */
     protected function verifyLegacyPassword(User $user, string $plainPassword): bool
     {
         $legacyHash = $user->legacy_password_hash;
 
         if (strlen($legacyHash) === 32 && ctype_xdigit($legacyHash)) {
-            // Asumsi md5 — CI3 lama paling umum pakai md5()
+            // CI3 md5 migration path
             return md5($plainPassword) === $legacyHash;
         }
 
-        // Fallback: plain text comparison
-        return hash_equals($legacyHash, $plainPassword);
+        // No plain text fallback — security risk
+        return false;
     }
 
     /**

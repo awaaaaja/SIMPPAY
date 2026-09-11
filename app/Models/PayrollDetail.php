@@ -19,6 +19,7 @@ class PayrollDetail extends Model
         'total_tunjangan_tambahan',
         'total_potongan_tambahan',
         'honor_kelebihan_sks',
+        'actual_sks_taught',
         'total_gaji',
         'breakdown_json',
     ];
@@ -33,6 +34,7 @@ class PayrollDetail extends Model
             'total_tunjangan_tambahan' => 'decimal:2',
             'total_potongan_tambahan' => 'decimal:2',
             'honor_kelebihan_sks' => 'decimal:2',
+            'actual_sks_taught' => 'decimal:1',
             'total_gaji' => 'decimal:2',
             'breakdown_json' => 'array',
         ];

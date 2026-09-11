@@ -47,14 +47,16 @@ class PayrollRunController extends Controller
     {
         $request->validate([
             'periode' => ['required', 'date_format:Y-m'],
+            'formula_version' => ['sometimes', 'string', 'in:legacy,ua-2025'],
         ]);
 
         $periode = $request->input('periode');
+        $formulaVersion = $request->input('formula_version', 'legacy');
 
-        CalculatePayrollJob::dispatch($periode, $request->user()->id);
+        CalculatePayrollJob::dispatch($periode, $request->user()->id, $formulaVersion);
 
         return redirect()->route('admin.payroll-run.index')
-            ->with('success', "Perhitungan gaji periode {$periode} sedang diproses.");
+            ->with('success', "Perhitungan gaji periode {$periode} ({$formulaVersion}) sedang diproses.");
     }
 
     public function finalize(PayrollRun $payroll_run, PayrollService $service): RedirectResponse

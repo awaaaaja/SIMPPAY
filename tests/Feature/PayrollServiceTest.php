@@ -160,7 +160,7 @@ class PayrollServiceTest extends TestCase
     {
         PotonganGaji::create([
             'nama_potongan' => 'Iuran Pensiun',
-            'tipe' => 'persentase',
+            'tipe' => 'nominal',
             'nilai' => 200000,
             'is_alpha_penalty' => false,
             'aktif' => true,
@@ -168,7 +168,7 @@ class PayrollServiceTest extends TestCase
 
         PotonganGaji::create([
             'nama_potongan' => 'Iuran JKK',
-            'tipe' => 'persentase',
+            'tipe' => 'nominal',
             'nilai' => 100000,
             'is_alpha_penalty' => false,
             'aktif' => true,
@@ -223,7 +223,7 @@ class PayrollServiceTest extends TestCase
         // Potongan
         PotonganGaji::create([
             'nama_potongan' => 'Iuran Pensiun',
-            'tipe' => 'persentase',
+            'tipe' => 'nominal',
             'nilai' => 200000,
             'is_alpha_penalty' => false,
             'aktif' => true,

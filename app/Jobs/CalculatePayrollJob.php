@@ -20,6 +20,7 @@ class CalculatePayrollJob implements ShouldQueue
     public function __construct(
         public string $periode,
         public int $userId,
+        public string $formulaVersion = 'legacy',
     ) {}
 
     public function handle(PayrollService $service): void
@@ -27,6 +28,6 @@ class CalculatePayrollJob implements ShouldQueue
         $user = User::findOrFail($this->userId);
         $periode = Carbon::parse($this->periode)->startOfMonth();
 
-        $service->calculateBatch($periode, $user);
+        $service->calculateBatch($periode, $user, $this->formulaVersion);
     }
 }

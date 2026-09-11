@@ -178,16 +178,17 @@ class AuthenticationTest extends TestCase
     }
 
     /**
-     * FR-04: Lazy password rehash — user dengan legacy plain text hash.
+     * FR-04: Plain text legacy passwords are rejected (security fix).
+     * Users with plain text hashes must reset via admin.
      */
-    public function test_lazy_password_rehash_from_plaintext(): void
+    public function test_plain_text_legacy_password_is_rejected(): void
     {
         $plainPassword = 'mypassword';
 
         $user = User::factory()->create([
             'username' => 'plainuser',
             'password' => 'invalid-hash',
-            'legacy_password_hash' => $plainPassword, // plain text stored as-is
+            'legacy_password_hash' => $plainPassword, // plain text stored
             'legacy_password_migrated' => false,
         ]);
 
@@ -196,12 +197,8 @@ class AuthenticationTest extends TestCase
             'password' => $plainPassword,
         ]);
 
-        $this->assertAuthenticated();
-
-        $user->refresh();
-        $this->assertTrue($user->legacy_password_migrated);
-        $this->assertNull($user->legacy_password_hash);
-        $this->assertTrue(Hash::check($plainPassword, $user->password));
+        // Plain text fallback removed — login should fail
+        $this->assertGuest();
     }
 
     /**

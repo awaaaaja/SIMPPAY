@@ -12,9 +12,8 @@ const prefix = useRoutePrefix();
 
 const props = defineProps({
     pegawai: Object,
-    jabatans: Array,
-    strukturals: Array,
-    fungsionals: Array,
+    golongans: Array,
+    jabatanStrukturalPoin: Array,
 });
 
 const p = props.pegawai;
@@ -24,10 +23,10 @@ const form = useForm({
     nama_pegawai: p.nama_pegawai,
     jenis_kelamin: p.jenis_kelamin,
     tanggal_masuk: p.tanggal_masuk ?? '',
+    tmt: p.tmt ?? '',
     status_pegawai: p.status_pegawai,
-    jabatan_id: p.jabatan_id ?? '',
-    struktural_id: p.struktural_id ?? '',
-    fungsional_id: p.fungsional_id ?? '',
+    jabatan_struktural_poin_id: p.jabatan_struktural_poin_id ?? '',
+    golongan_ruang_id: p.golongan_ruang_id ?? '',
     email: p.email ?? '',
     no_hp: p.no_hp ?? '',
     alamat: p.alamat ?? '',
@@ -44,6 +43,8 @@ const form = useForm({
     no_sk: p.no_sk ?? '',
     tgl_sk: p.tgl_sk ?? '',
     status_dosen: p.status_dosen ?? '',
+    strata_pendidikan: p.strata_pendidikan ?? '',
+    program_mengajar: p.program_mengajar ?? '',
     ikatan_kerja: p.ikatan_kerja ?? '',
     status_kawin: p.status_kawin ?? '',
     nama_sm: p.nama_sm ?? '',
@@ -127,39 +128,34 @@ function submit() {
                         <h3 class="pt-4 text-lg font-semibold text-gray-800">Kepegawaian</h3>
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <Label>Jabatan</Label>
-                                <Select v-model="form.jabatan_id">
+                                <Label>Jabatan Struktural</Label>
+                                <Select v-model="form.jabatan_struktural_poin_id">
                                     <SelectTrigger class="mt-1 w-full"><SelectValue placeholder="-- Pilih --" /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem v-for="j in jabatans" :key="j.id" :value="j.id">{{ j.nama_jabatan }}</SelectItem>
+                                        <SelectItem v-for="j in jabatanStrukturalPoin" :key="j.id" :value="j.id">{{ j.nama_jabatan }}</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <p v-if="form.errors.jabatan_id" class="mt-1 text-sm text-destructive">{{ form.errors.jabatan_id }}</p>
+                                <p v-if="form.errors.jabatan_struktural_poin_id" class="mt-1 text-sm text-destructive">{{ form.errors.jabatan_struktural_poin_id }}</p>
                             </div>
                             <div>
-                                <Label>Struktural</Label>
-                                <Select v-model="form.struktural_id">
+                                <Label>Golongan Ruang</Label>
+                                <Select v-model="form.golongan_ruang_id">
                                     <SelectTrigger class="mt-1 w-full"><SelectValue placeholder="-- Pilih --" /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem v-for="s in strukturals" :key="s.id" :value="s.id">{{ s.nama_struktural }}</SelectItem>
+                                        <SelectItem v-for="g in golongans" :key="g.id" :value="g.id">{{ g.kode }}</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <p v-if="form.errors.struktural_id" class="mt-1 text-sm text-destructive">{{ form.errors.struktural_id }}</p>
-                            </div>
-                            <div>
-                                <Label>Fungsional</Label>
-                                <Select v-model="form.fungsional_id">
-                                    <SelectTrigger class="mt-1 w-full"><SelectValue placeholder="-- Pilih --" /></SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem v-for="f in fungsionals" :key="f.id" :value="f.id">{{ f.nama_fungsional }}</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <p v-if="form.errors.fungsional_id" class="mt-1 text-sm text-destructive">{{ form.errors.fungsional_id }}</p>
+                                <p v-if="form.errors.golongan_ruang_id" class="mt-1 text-sm text-destructive">{{ form.errors.golongan_ruang_id }}</p>
                             </div>
                             <div>
                                 <Label for="tanggal_masuk">Tanggal Masuk</Label>
                                 <Input id="tanggal_masuk" v-model="form.tanggal_masuk" type="date" class="mt-1" />
                                 <p v-if="form.errors.tanggal_masuk" class="mt-1 text-sm text-destructive">{{ form.errors.tanggal_masuk }}</p>
+                            </div>
+                            <div>
+                                <Label for="tmt">TMT (Tanggal Mulai Kerja)</Label>
+                                <Input id="tmt" v-model="form.tmt" type="date" class="mt-1" />
+                                <p v-if="form.errors.tmt" class="mt-1 text-sm text-destructive">{{ form.errors.tmt }}</p>
                             </div>
                             <div>
                                 <Label>Status</Label>
@@ -188,6 +184,30 @@ function submit() {
                                     </SelectContent>
                                 </Select>
                                 <p v-if="form.errors.status_dosen" class="mt-1 text-sm text-destructive">{{ form.errors.status_dosen }}</p>
+                            </div>
+                            <div>
+                                <Label>Strata Pendidikan</Label>
+                                <Select v-model="form.strata_pendidikan">
+                                    <SelectTrigger class="mt-1 w-full"><SelectValue placeholder="-- Pilih --" /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="profesor">Profesor</SelectItem>
+                                        <SelectItem value="s3">S.3 / Dr</SelectItem>
+                                        <SelectItem value="s2">S.2 / Magister</SelectItem>
+                                        <SelectItem value="lainnya">Lainnya</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <p v-if="form.errors.strata_pendidikan" class="mt-1 text-sm text-destructive">{{ form.errors.strata_pendidikan }}</p>
+                            </div>
+                            <div>
+                                <Label>Program Mengajar</Label>
+                                <Select v-model="form.program_mengajar">
+                                    <SelectTrigger class="mt-1 w-full"><SelectValue placeholder="-- Pilih --" /></SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="s1">Program S1</SelectItem>
+                                        <SelectItem value="s2">Program S2</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <p v-if="form.errors.program_mengajar" class="mt-1 text-sm text-destructive">{{ form.errors.program_mengajar }}</p>
                             </div>
                             <div>
                                 <Label for="nidn">NIDN</Label>

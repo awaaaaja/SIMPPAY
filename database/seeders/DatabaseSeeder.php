@@ -14,6 +14,19 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RoleSeeder::class,
+            // Reference tables (SOURCE: Rumusan Penggajian UA resmi)
+            GolonganRuangSeeder::class,
+            GajiPokokScaleSeeder::class,
+            LevelStrukturSeeder::class,
+            TunjanganTransportasiScaleSeeder::class,
+            KlasifikasiJabatanStrukturalSeeder::class,
+            JabatanStrukturalPoinSeeder::class,
+            TunjanganFungsionalDosenScaleSeeder::class,
+            TunjanganJabatanKaryawanScaleSeeder::class,
+            TunjanganVariabelScaleSeeder::class,
+            HonorSksScaleSeeder::class,
+            BebanSksJabatanSeeder::class,
+            // Existing data
             PayrollSeeder::class,
             DummySeeder::class,
         ]);

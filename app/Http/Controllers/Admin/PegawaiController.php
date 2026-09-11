@@ -6,10 +6,9 @@ use App\Exports\PegawaiExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PegawaiRequest;
 use App\Imports\PegawaiImport;
-use App\Models\Fungsional;
-use App\Models\Jabatan;
+use App\Models\GolonganRuang;
+use App\Models\JabatanStrukturalPoin;
 use App\Models\Pegawai;
-use App\Models\Struktural;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,30 +26,24 @@ class PegawaiController extends Controller
         $this->authorize('viewAny', Pegawai::class);
 
         $pegawais = Pegawai::query()
-            ->with(['jabatan', 'struktural', 'fungsional'])
+            ->with(['jabatanStrukturalPoin', 'golonganRuang'])
             ->when($request->search, fn ($q, $s) => $q->where(function ($q) use ($s) {
                 $q->where('nama_pegawai', 'like', "%{$s}%")
                     ->orWhere('nik', 'like', "%{$s}%");
             }))
-            ->when($request->jabatan_id, fn ($q, $v) => $q->where('jabatan_id', $v))
             ->when($request->status_pegawai, fn ($q, $v) => $q->where('status_pegawai', $v))
-            ->when($request->struktural_id, fn ($q, $v) => $q->where('struktural_id', $v))
-            ->when($request->fungsional_id, fn ($q, $v) => $q->where('fungsional_id', $v))
             ->orderBy('nama_pegawai')
             ->paginate(20)
             ->withQueryString();
 
         return Inertia::render('Admin/Pegawai/Index', [
             'pegawais' => $pegawais,
-            'jabatans' => Jabatan::orderBy('nama_jabatan')->get(['id', 'nama_jabatan']),
-            'strukturals' => Struktural::orderBy('nama_struktural')->get(['id', 'nama_struktural']),
-            'fungsionals' => Fungsional::orderBy('nama_fungsional')->get(['id', 'nama_fungsional']),
             'can' => [
                 'create' => $request->user()->can('create', Pegawai::class),
                 'update' => $request->user()->hasRole('admin'),
                 'delete' => $request->user()->hasRole('admin'),
             ],
-            'filters' => $request->only(['search', 'jabatan_id', 'status_pegawai', 'struktural_id', 'fungsional_id']),
+            'filters' => $request->only(['search', 'status_pegawai']),
         ]);
     }
 
@@ -59,9 +52,8 @@ class PegawaiController extends Controller
         $this->authorize('create', Pegawai::class);
 
         return Inertia::render('Admin/Pegawai/Create', [
-            'jabatans' => Jabatan::orderBy('nama_jabatan')->get(['id', 'nama_jabatan']),
-            'strukturals' => Struktural::orderBy('nama_struktural')->get(['id', 'nama_struktural']),
-            'fungsionals' => Fungsional::orderBy('nama_fungsional')->get(['id', 'nama_fungsional']),
+            'golongans' => GolonganRuang::orderBy('urutan')->get(['id', 'kode']),
+            'jabatanStrukturalPoin' => JabatanStrukturalPoin::orderBy('nama_jabatan')->get(['id', 'nama_jabatan']),
         ]);
     }
 
@@ -81,11 +73,17 @@ class PegawaiController extends Controller
         $pegawai = Pegawai::create($data);
 
         if ($request->boolean('create_user')) {
+            // Require explicit password — no more default 'password123'
+            $password = $request->input('user_password');
+            if (empty($password)) {
+                $password = \Illuminate\Support\Str::random(12);
+            }
+
             $user = User::create([
                 'name' => $pegawai->nama_pegawai,
                 'username' => $request->input('user_username', $pegawai->nik),
                 'email' => $pegawai->email,
-                'password' => Hash::make($request->input('user_password', 'password123')),
+                'password' => Hash::make($password),
             ]);
             $user->assignRole($request->input('user_role', 'pegawai'));
             $pegawai->update(['user_id' => $user->id]);
@@ -98,7 +96,7 @@ class PegawaiController extends Controller
     {
         $this->authorize('view', $pegawai);
 
-        $pegawai->load(['jabatan', 'struktural', 'fungsional', 'anak', 'user']);
+        $pegawai->load(['anak', 'user', 'golonganRuang', 'jabatanStrukturalPoin']);
 
         return Inertia::render('Admin/Pegawai/Show', [
             'pegawai' => $pegawai,
@@ -118,9 +116,8 @@ class PegawaiController extends Controller
 
         return Inertia::render('Admin/Pegawai/Edit', [
             'pegawai' => $pegawai,
-            'jabatans' => Jabatan::orderBy('nama_jabatan')->get(['id', 'nama_jabatan']),
-            'strukturals' => Struktural::orderBy('nama_struktural')->get(['id', 'nama_struktural']),
-            'fungsionals' => Fungsional::orderBy('nama_fungsional')->get(['id', 'nama_fungsional']),
+            'golongans' => GolonganRuang::orderBy('urutan')->get(['id', 'kode']),
+            'jabatanStrukturalPoin' => JabatanStrukturalPoin::orderBy('nama_jabatan')->get(['id', 'nama_jabatan']),
         ]);
     }
 

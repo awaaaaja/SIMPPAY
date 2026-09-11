@@ -32,9 +32,11 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
         ->middleware('abilities:payroll:process');
     Route::get('/penggajian/jobs/{jobId}', [PenggajianController::class, 'jobStatus']);
 
-    // ─── AI (all authenticated users) ─────────────────────────
-    Route::post('/ai/payroll-query', [AiController::class, 'payrollQuery']);
-    Route::post('/ai/chat', [AiController::class, 'chat']);
+    // ─── AI (all authenticated users, rate limited) ─────────────
+    Route::post('/ai/payroll-query', [AiController::class, 'payrollQuery'])
+        ->middleware('throttle:30,1'); // 30 requests per minute
+    Route::post('/ai/chat', [AiController::class, 'chat'])
+        ->middleware('throttle:30,1'); // 30 requests per minute
 
     // ─── AI (admin only) ──────────────────────────────────────
     Route::get('/ai/anomalies', [AiController::class, 'anomalies'])

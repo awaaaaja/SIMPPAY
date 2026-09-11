@@ -51,6 +51,37 @@ function submitVoid() {
 }
 
 const grandTotal = props.run.details?.reduce((sum, d) => sum + parseFloat(d.total_gaji), 0) || 0;
+
+const isUaFormula = props.run.formula_version === 'ua-2025';
+
+const uaPendapatan = [
+    { label: 'Gaji Pokok', key: 'gajiPokok' },
+    { label: 'Tj. Jabatan', key: 'tunjanganJabatan' },
+    { label: 'Tj. Fungsional Dosen', key: 'tunjanganFungsional' },
+    { label: 'Tj. Struktural', key: 'tunjanganStruktural' },
+    { label: 'Tj. Variabel', key: 'tunjanganVariabel' },
+    { label: 'Tj. Istri', key: 'tunjanganIstri' },
+    { label: 'Tj. Anak', key: 'tunjanganAnak' },
+    { label: 'Tj. Makan', key: 'tunjanganMakan' },
+    { label: 'BPJS TK Income', key: 'bpjsTkIncome' },
+    { label: 'Tj. Transportasi', key: 'tunjanganTransportasi' },
+    { label: 'Penyesuaian', key: 'penyesuaian' },
+    { label: 'Lembur', key: 'lembur' },
+    { label: 'Honor Kelebihan SKS', key: 'honorKelebihanSks' },
+    { label: 'Rapel', key: 'rapel' },
+];
+
+const uaPotongan = [
+    { label: 'Pot. Makan', key: 'potonganMakan' },
+    { label: 'Pot. BPJS', key: 'potonganBpjs' },
+    { label: 'Pot. BPJS TK', key: 'potonganBpjsTk' },
+    { label: 'Pot. Pendidikan Anak', key: 'potonganPendidikanAnak' },
+    { label: 'Pot. Sosial', key: 'potonganSosial' },
+    { label: 'Pot. UJKS', key: 'potonganUjks' },
+    { label: 'Pot. KKB', key: 'potonganKkb' },
+    { label: 'Pot. BTN/BNS', key: 'potonganBtnBns' },
+    { label: 'Pot. Lain-lain', key: 'potonganLainLain' },
+];
 </script>
 
 <template>
@@ -66,6 +97,9 @@ const grandTotal = props.run.details?.reduce((sum, d) => sum + parseFloat(d.tota
                     <h1 class="text-2xl font-semibold text-gray-800">Payroll {{ formatPeriode(run.periode) }}</h1>
                 </div>
                 <div class="flex items-center gap-2">
+                    <Badge v-if="run.formula_version === 'ua-2025'" variant="default" class="bg-blue-600 hover:bg-blue-700 text-sm">
+                        UA 2025
+                    </Badge>
                     <Badge :variant="statusVariant(run.status)" class="capitalize text-sm">{{ run.status }}</Badge>
                     <Button variant="outline" size="sm" as-child>
                         <a :href="route(`${prefix}.laporan-gaji.pdf`, { periode: run.periode?.substring(0, 7) })" target="_blank">
@@ -179,48 +213,82 @@ const grandTotal = props.run.details?.reduce((sum, d) => sum + parseFloat(d.tota
                     </SheetDescription>
                 </SheetHeader>
                 <div v-if="selectedDetail" class="space-y-6 px-4 py-4">
-                    <div>
-                        <p class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Pendapatan</p>
-                        <div class="space-y-1.5">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-muted-foreground">Gaji Pokok</span>
-                                <span class="tabular-nums">{{ formatRupiah(selectedDetail.gaji_pokok) }}</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-muted-foreground">Tj. Transport</span>
-                                <span class="tabular-nums">{{ formatRupiah(selectedDetail.tj_transport) }}</span>
-                            </div>
-                            <div class="flex justify-between text-sm">
-                                <span class="text-muted-foreground">Uang Makan</span>
-                                <span class="tabular-nums">{{ formatRupiah(selectedDetail.uang_makan) }}</span>
-                            </div>
-                            <div v-if="selectedDetail.breakdown_json?.tunjangan?.length" class="pt-1 border-t border-border">
-                                <div v-for="(t, i) in selectedDetail.breakdown_json.tunjangan" :key="i" class="flex justify-between text-sm">
-                                    <span class="text-muted-foreground">+ {{ t.nama }}</span>
-                                    <span class="text-primary tabular-nums">{{ formatRupiah(t.nominal) }}</span>
+                    <!-- UA-2025 Breakdown -->
+                    <template v-if="isUaFormula && selectedDetail.breakdown_json?.gajiPokok !== undefined">
+                        <div>
+                            <p class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Pendapatan (UA 2025)</p>
+                            <div class="space-y-1.5">
+                                <div v-for="item in uaPendapatan" :key="item.key" class="flex justify-between text-sm"
+                                    v-show="selectedDetail.breakdown_json[item.key] > 0">
+                                    <span class="text-muted-foreground">{{ item.label }}</span>
+                                    <span class="tabular-nums">{{ formatRupiah(selectedDetail.breakdown_json[item.key]) }}</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <p class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Potongan</p>
-                        <div class="space-y-1.5">
-                            <div class="flex justify-between text-sm">
-                                <span class="text-muted-foreground">Potongan Alpha</span>
-                                <span class="text-destructive tabular-nums">{{ formatRupiah(selectedDetail.potongan_alpha) }}</span>
-                            </div>
-                            <div v-if="selectedDetail.breakdown_json?.potongan?.length" class="pt-1 border-t border-border">
-                                <div v-for="(p, i) in selectedDetail.breakdown_json.potongan" :key="i" class="flex justify-between text-sm">
-                                    <span class="text-muted-foreground">- {{ p.nama }}</span>
-                                    <span class="text-destructive tabular-nums">{{ formatRupiah(p.nilai) }}</span>
+                        <div>
+                            <p class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Potongan (UA 2025)</p>
+                            <div class="space-y-1.5">
+                                <div v-for="item in uaPotongan" :key="item.key" class="flex justify-between text-sm"
+                                    v-show="selectedDetail.breakdown_json[item.key] > 0">
+                                    <span class="text-muted-foreground">- {{ item.label }}</span>
+                                    <span class="text-destructive tabular-nums">{{ formatRupiah(selectedDetail.breakdown_json[item.key]) }}</span>
+                                </div>
+                                <div v-if="!uaPotongan.some(p => selectedDetail.breakdown_json[p.key] > 0)" class="text-sm text-muted-foreground">
+                                    Tidak ada potongan
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="pt-4 border-t border-border flex justify-between">
-                        <span class="text-sm font-semibold">Total Gaji</span>
-                        <span class="text-lg font-bold tabular-nums">{{ formatRupiah(selectedDetail.total_gaji) }}</span>
-                    </div>
+                        <div class="pt-4 border-t border-border flex justify-between">
+                            <span class="text-sm font-semibold">THP</span>
+                            <span class="text-lg font-bold tabular-nums">{{ formatRupiah(selectedDetail.total_gaji) }}</span>
+                        </div>
+                    </template>
+
+                    <!-- Legacy Breakdown -->
+                    <template v-else>
+                        <div>
+                            <p class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Pendapatan</p>
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-muted-foreground">Gaji Pokok</span>
+                                    <span class="tabular-nums">{{ formatRupiah(selectedDetail.gaji_pokok) }}</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-muted-foreground">Tj. Transport</span>
+                                    <span class="tabular-nums">{{ formatRupiah(selectedDetail.tj_transport) }}</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-muted-foreground">Uang Makan</span>
+                                    <span class="tabular-nums">{{ formatRupiah(selectedDetail.uang_makan) }}</span>
+                                </div>
+                                <div v-if="selectedDetail.breakdown_json?.tunjangan?.length" class="pt-1 border-t border-border">
+                                    <div v-for="(t, i) in selectedDetail.breakdown_json.tunjangan" :key="i" class="flex justify-between text-sm">
+                                        <span class="text-muted-foreground">+ {{ t.nama }}</span>
+                                        <span class="text-primary tabular-nums">{{ formatRupiah(t.nominal) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">Potongan</p>
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-muted-foreground">Potongan Alpha</span>
+                                    <span class="text-destructive tabular-nums">{{ formatRupiah(selectedDetail.potongan_alpha) }}</span>
+                                </div>
+                                <div v-if="selectedDetail.breakdown_json?.potongan?.length" class="pt-1 border-t border-border">
+                                    <div v-for="(p, i) in selectedDetail.breakdown_json.potongan" :key="i" class="flex justify-between text-sm">
+                                        <span class="text-muted-foreground">- {{ p.nama }}</span>
+                                        <span class="text-destructive tabular-nums">{{ formatRupiah(p.nilai) }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 border-t border-border flex justify-between">
+                            <span class="text-sm font-semibold">Total Gaji</span>
+                            <span class="text-lg font-bold tabular-nums">{{ formatRupiah(selectedDetail.total_gaji) }}</span>
+                        </div>
+                    </template>
                 </div>
             </SheetContent>
         </Sheet>

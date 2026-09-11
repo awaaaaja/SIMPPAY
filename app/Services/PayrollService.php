@@ -14,6 +14,7 @@ use App\Models\PotonganGaji;
 use App\Models\TahunAkademik;
 use App\Models\TunjanganGaji;
 use App\Models\User;
+use App\Services\Payroll\PayrollUaFormulaService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -98,11 +99,19 @@ final class PayrollService
             ->where('is_alpha_penalty', false)
             ->get();
 
-        $totalPotonganTambahan = (float) $potongans->sum('nilai');
+        // Handle both 'nominal' and 'persentase' tipe
+        $totalPotonganTambahan = (float) $potongans->reduce(function ($carry, $p) use ($totalDasar) {
+            if ($p->tipe === 'persentase') {
+                return $carry + ($totalDasar * $p->nilai / 100);
+            }
+            return $carry + $p->nilai;
+        }, 0.0);
+
         $breakdownPotongan = $potongans->map(fn ($p) => [
             'nama' => $p->nama_potongan,
             'tipe' => $p->tipe,
             'nilai' => (float) $p->nilai,
+            'nominal' => $p->tipe === 'persentase' ? ($totalDasar * $p->nilai / 100) : (float) $p->nilai,
         ])->toArray();
 
         // ─── Honor Kelebihan SKS (PRD FR-31) ──────────────────
@@ -176,12 +185,14 @@ final class PayrollService
      * Calculate for ALL active pegawai in a periode, persist as
      * PayrollRun + PayrollDetails (status: calculated). Idempotent —
      * if a non-finalized run exists for this periode, replace it.
+     *
+     * @param  string  $formulaVersion  'legacy' | 'ua-2025'
      */
-    public function calculateBatch(Carbon $periode, User $calculatedBy): PayrollRun
+    public function calculateBatch(Carbon $periode, User $calculatedBy, string $formulaVersion = 'legacy', array $sksInputs = []): PayrollRun
     {
         $periodeStart = $periode->copy()->startOfMonth();
 
-        return DB::transaction(function () use ($periodeStart, $calculatedBy) {
+        return DB::transaction(function () use ($periodeStart, $calculatedBy, $formulaVersion, $sksInputs) {
             // Idempotent: delete existing non-finalized run for this periode
             $existingRun = PayrollRun::where('periode', $periodeStart)->first();
 
@@ -194,6 +205,7 @@ final class PayrollService
                 $run = $existingRun;
                 $run->update([
                     'status' => 'calculated',
+                    'formula_version' => $formulaVersion,
                     'calculated_by' => $calculatedBy->id,
                     'calculated_at' => now(),
                 ]);
@@ -201,6 +213,7 @@ final class PayrollService
                 $run = PayrollRun::create([
                     'periode' => $periodeStart,
                     'status' => 'calculated',
+                    'formula_version' => $formulaVersion,
                     'calculated_by' => $calculatedBy->id,
                     'calculated_at' => now(),
                 ]);
@@ -209,26 +222,67 @@ final class PayrollService
             // Get all active pegawai
             $pegawais = Pegawai::where('status_pegawai', 'aktif')->get();
 
-            foreach ($pegawais as $pegawai) {
-                $result = $this->calculate($pegawai, $periodeStart);
-
-                PayrollDetail::create([
-                    'payroll_run_id' => $run->id,
-                    'pegawai_id' => $result->pegawaiId,
-                    'gaji_pokok' => $result->gajiPokok,
-                    'tj_transport' => $result->tjTransport,
-                    'uang_makan' => $result->uangMakan,
-                    'potongan_alpha' => $result->potonganAlpha,
-                    'total_tunjangan_tambahan' => $result->totalTunjanganTambahan,
-                    'total_potongan_tambahan' => $result->totalPotonganTambahan,
-                    'honor_kelebihan_sks' => $result->honorKelebihanSks,
-                    'total_gaji' => $result->totalGaji,
-                    'breakdown_json' => $result->toBreakdownJson(),
-                ]);
+            if ($formulaVersion === 'ua-2025') {
+                $this->calculateBatchUa2025($pegawais, $periodeStart, $run, $sksInputs);
+            } else {
+                $this->calculateBatchLegacy($pegawais, $periodeStart, $run);
             }
 
             return $run->fresh();
         });
+    }
+
+    private function calculateBatchLegacy($pegawais, Carbon $periodeStart, PayrollRun $run): void
+    {
+        foreach ($pegawais as $pegawai) {
+            $result = $this->calculate($pegawai, $periodeStart);
+
+            PayrollDetail::create([
+                'payroll_run_id' => $run->id,
+                'pegawai_id' => $result->pegawaiId,
+                'gaji_pokok' => $result->gajiPokok,
+                'tj_transport' => $result->tjTransport,
+                'uang_makan' => $result->uangMakan,
+                'potongan_alpha' => $result->potonganAlpha,
+                'total_tunjangan_tambahan' => $result->totalTunjanganTambahan,
+                'total_potongan_tambahan' => $result->totalPotonganTambahan,
+                'honor_kelebihan_sks' => $result->honorKelebihanSks,
+                'total_gaji' => $result->totalGaji,
+                'breakdown_json' => $result->toBreakdownJson(),
+            ]);
+        }
+    }
+
+    private function calculateBatchUa2025($pegawais, Carbon $periodeStart, PayrollRun $run, array $sksInputs = []): void
+    {
+        $ua = new PayrollUaFormulaService;
+
+        foreach ($pegawais as $pegawai) {
+            $actualSks = (float) ($sksInputs[$pegawai->id] ?? 0.0);
+            $result = $ua->calculate($pegawai, $periodeStart, $actualSks);
+
+            // Map UA 29-field result → PayrollDetail columns
+            $totalTunjanganTambahan = $result->tunjanganJabatan + $result->tunjanganFungsional
+                + $result->tunjanganStruktural + $result->tunjanganVariabel
+                + $result->tunjanganIstri + $result->tunjanganAnak
+                + $result->bpjsTkIncome + $result->tunjanganTransportasi
+                + $result->lembur + $result->honorKelebihanSks + $result->rapel;
+
+            PayrollDetail::create([
+                'payroll_run_id' => $run->id,
+                'pegawai_id' => $result->pegawaiId,
+                'gaji_pokok' => $result->gajiPokok,
+                'tj_transport' => $result->tunjanganTransportasi,
+                'uang_makan' => $result->tunjanganMakan,
+                'potongan_alpha' => 0.0, // ponytail: not in UA formula scope yet
+                'total_tunjangan_tambahan' => $totalTunjanganTambahan,
+                'total_potongan_tambahan' => $result->jumlahPotongan,
+                'honor_kelebihan_sks' => $result->honorKelebihanSks,
+                'actual_sks_taught' => $actualSks,
+                'total_gaji' => $result->thp,
+                'breakdown_json' => $result->toArray(),
+            ]);
+        }
     }
 
     /**

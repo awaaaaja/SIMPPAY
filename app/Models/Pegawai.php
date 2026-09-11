@@ -17,11 +17,14 @@ class Pegawai extends Model
         'user_id',
         'jabatan_id',
         'struktural_id',
+        'jabatan_struktural_poin_id',
         'fungsional_id',
+        'golongan_ruang_id',
         'nik',
         'nama_pegawai',
         'jenis_kelamin',
         'tanggal_masuk',
+        'tmt',
         'status_pegawai',
         'photo',
         'ktp',
@@ -41,6 +44,8 @@ class Pegawai extends Model
         'tgl_sk',
         'foto_sk',
         'status_dosen',
+        'strata_pendidikan',
+        'program_mengajar',
         'ikatan_kerja',
         'status_kawin',
         'nama_sm',
@@ -56,6 +61,7 @@ class Pegawai extends Model
     {
         return [
             'tanggal_masuk' => 'date',
+            'tmt' => 'date',
             'tgl_lahir' => 'date',
             'tgl_sk' => 'date',
             'tgl_sk_jabatan' => 'date',
@@ -80,6 +86,16 @@ class Pegawai extends Model
     public function fungsional(): BelongsTo
     {
         return $this->belongsTo(Fungsional::class);
+    }
+
+    public function golonganRuang(): BelongsTo
+    {
+        return $this->belongsTo(GolonganRuang::class);
+    }
+
+    public function jabatanStrukturalPoin(): BelongsTo
+    {
+        return $this->belongsTo(JabatanStrukturalPoin::class);
     }
 
     public function anak(): HasMany

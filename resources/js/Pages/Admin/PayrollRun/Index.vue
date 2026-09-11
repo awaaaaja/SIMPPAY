@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calculator, FileDown, FileText } from '@lucide/vue';
 
 const prefix = useRoutePrefix();
@@ -19,7 +20,7 @@ const props = defineProps({
 });
 
 const showCalcModal = ref(false);
-const calcForm = useForm({ periode: '' });
+const calcForm = useForm({ periode: '', formula_version: 'legacy' });
 
 function submitCalc() {
     calcForm.post(route(`${prefix.value}.payroll-run.calculate`), {
@@ -66,6 +67,19 @@ function statusVariant(status) {
                                 <Input v-model="calcForm.periode" type="month" required />
                                 <p v-if="calcForm.errors.periode" class="text-sm text-destructive">{{ calcForm.errors.periode }}</p>
                             </div>
+                            <div class="space-y-1">
+                                <Label>Formula</Label>
+                                <Select v-model="calcForm.formula_version">
+                                    <SelectTrigger>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="legacy">Legacy (Sistem Lama)</SelectItem>
+                                        <SelectItem value="ua-2025">UA 2025 (Rumusan Baru)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <p class="text-xs text-muted-foreground">Default: Legacy. Pilih UA 2025 hanya untuk pilot terbatas.</p>
+                            </div>
                             <DialogFooter>
                                 <Button type="button" variant="outline" @click="showCalcModal = false">Batal</Button>
                                 <Button type="submit" :disabled="calcForm.processing">
@@ -83,6 +97,7 @@ function statusVariant(status) {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Periode</TableHead>
+                            <TableHead>Formula</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Dihitung Oleh</TableHead>
                             <TableHead>Difinalisasi Oleh</TableHead>
@@ -92,6 +107,12 @@ function statusVariant(status) {
                     <TableBody>
                         <TableRow v-for="run in runs.data" :key="run.id">
                             <TableCell class="font-medium">{{ formatPeriode(run.periode) }}</TableCell>
+                            <TableCell>
+                                <Badge v-if="run.formula_version === 'ua-2025'" variant="default" class="bg-blue-600 hover:bg-blue-700 text-xs">
+                                    UA 2025
+                                </Badge>
+                                <span v-else class="text-muted-foreground text-xs">Legacy</span>
+                            </TableCell>
                             <TableCell>
                                 <Badge :variant="statusVariant(run.status)" class="capitalize">{{ run.status }}</Badge>
                             </TableCell>
@@ -104,7 +125,7 @@ function statusVariant(status) {
                             </TableCell>
                         </TableRow>
                         <TableRow v-if="runs.data.length === 0">
-                            <TableCell colspan="5" class="text-center py-8 text-muted-foreground">Belum ada payroll run.</TableCell>
+                            <TableCell colspan="6" class="text-center py-8 text-muted-foreground">Belum ada payroll run.</TableCell>
                         </TableRow>
                     </TableBody>
                 </Table>

@@ -14,6 +14,7 @@ class PayrollRun extends Model
         'job_id',
         'periode',
         'status',
+        'formula_version',
         'calculated_by',
         'calculated_at',
         'finalized_by',

@@ -19,27 +19,18 @@ const prefix = useRoutePrefix();
 
 const props = defineProps({
     pegawais: Object,
-    jabatans: Array,
-    strukturals: Array,
-    fungsionals: Array,
     can: Object,
     filters: Object,
 });
 
 const ALL = '__all__';
 const search = ref(props.filters.search || '');
-const jabatan_id = ref(props.filters.jabatan_id || ALL);
 const status_pegawai = ref(props.filters.status_pegawai || ALL);
-const struktural_id = ref(props.filters.struktural_id || ALL);
-const fungsional_id = ref(props.filters.fungsional_id || ALL);
 
 function applyFilter() {
     router.get(route(`${prefix.value}.pegawai.index`), {
         search: search.value,
-        jabatan_id: jabatan_id.value === ALL ? '' : jabatan_id.value,
         status_pegawai: status_pegawai.value === ALL ? '' : status_pegawai.value,
-        struktural_id: struktural_id.value === ALL ? '' : struktural_id.value,
-        fungsional_id: fungsional_id.value === ALL ? '' : fungsional_id.value,
     }, {
         preserveState: true,
         replace: true,
@@ -80,20 +71,6 @@ function statusVariant(status) {
                     <Input v-model="search" @keyup.enter="applyFilter" placeholder="Nama atau NIK..." class="w-48" />
                 </div>
                 <div class="space-y-1">
-                    <Label>Jabatan</Label>
-                    <Select v-model="jabatan_id" @update:model-value="applyFilter">
-                        <SelectTrigger class="w-44">
-                            <SelectValue placeholder="Semua" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem :value="ALL">Semua</SelectItem>
-                            <SelectItem v-for="j in jabatans" :key="j.id" :value="String(j.id)">
-                                {{ j.nama_jabatan }}
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div class="space-y-1">
                     <Label>Status</Label>
                     <Select v-model="status_pegawai" @update:model-value="applyFilter">
                         <SelectTrigger class="w-36">
@@ -104,34 +81,6 @@ function statusVariant(status) {
                             <SelectItem value="aktif">Aktif</SelectItem>
                             <SelectItem value="nonaktif">Nonaktif</SelectItem>
                             <SelectItem value="pensiun">Pensiun</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div class="space-y-1">
-                    <Label>Struktural</Label>
-                    <Select v-model="struktural_id" @update:model-value="applyFilter">
-                        <SelectTrigger class="w-44">
-                            <SelectValue placeholder="Semua" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem :value="ALL">Semua</SelectItem>
-                            <SelectItem v-for="s in strukturals" :key="s.id" :value="String(s.id)">
-                                {{ s.nama_struktural }}
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div class="space-y-1">
-                    <Label>Fungsional</Label>
-                    <Select v-model="fungsional_id" @update:model-value="applyFilter">
-                        <SelectTrigger class="w-44">
-                            <SelectValue placeholder="Semua" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem :value="ALL">Semua</SelectItem>
-                            <SelectItem v-for="f in fungsionals" :key="f.id" :value="String(f.id)">
-                                {{ f.nama_fungsional }}
-                            </SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -146,10 +95,7 @@ function statusVariant(status) {
                             <TableHead class="w-12">No</TableHead>
                             <TableHead>Nama</TableHead>
                             <TableHead>NIK</TableHead>
-                            <TableHead>Jabatan</TableHead>
                             <TableHead class="text-center">Status</TableHead>
-                            <TableHead>Struktural</TableHead>
-                            <TableHead>Fungsional</TableHead>
                             <TableHead class="text-right">Aksi</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -164,14 +110,11 @@ function statusVariant(status) {
                                 </Link>
                             </TableCell>
                             <TableCell class="text-muted-foreground">{{ pegawai.nik }}</TableCell>
-                            <TableCell class="text-muted-foreground">{{ pegawai.jabatan?.nama_jabatan ?? '-' }}</TableCell>
                             <TableCell class="text-center">
                                 <Badge :variant="statusVariant(pegawai.status_pegawai)" class="capitalize">
                                     {{ pegawai.status_pegawai }}
                                 </Badge>
                             </TableCell>
-                            <TableCell class="text-muted-foreground">{{ pegawai.struktural?.nama_struktural ?? '-' }}</TableCell>
-                            <TableCell class="text-muted-foreground">{{ pegawai.fungsional?.nama_fungsional ?? '-' }}</TableCell>
                             <TableCell class="text-right">
                                 <div class="flex items-center justify-end gap-2">
                                     <Button variant="ghost" size="icon-sm" as-child>
@@ -202,7 +145,7 @@ function statusVariant(status) {
                             </TableCell>
                         </TableRow>
                         <TableRow v-if="pegawais.data.length === 0">
-                            <TableCell colspan="8" class="text-center py-12 text-muted-foreground">
+                            <TableCell colspan="5" class="text-center py-12 text-muted-foreground">
                                 Belum ada data pegawai.
                             </TableCell>
                         </TableRow>

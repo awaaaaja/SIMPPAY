@@ -32,7 +32,9 @@ Disahkan di Padang, 1 Agustus 2025, oleh:
 
 ## 2. Jenjang Karir Dosen — Pangkat/Golongan/Jabatan Fungsional (dari PDF)
 
-| No. | Pangkat | Golongan Ruang | Jabatan Fungsional | Jumlah Angka Kredit Minimum |
+> **STATUS: "Jumlah Angka Kredit Minimum" di kolom terakhir tabel ini TIDAK DIPAKAI untuk payroll** (dikonfirmasi Yang Mulia). Ini murni informasi syarat kenaikan pangkat akademik (BKD/portofolio dosen), bukan input kalkulasi gaji. JANGAN dibuatkan tabel/field/migration terpisah untuk ini. Satu-satunya "angka kredit" yang relevan untuk payroll adalah kolom **Angka Kredit** di §7 (Tunjangan Fungsional Dosen) — itu tetap dipakai karena menentukan besaran tunjangan fungsional. Tabel di bawah ini dipertahankan di dokumen sebagai konteks historis/referensi jenjang karir saja, bukan sebagai spesifikasi fitur yang harus dibangun.
+
+| No. | Pangkat | Golongan Ruang | Jabatan Fungsional | Jumlah Angka Kredit Minimum (tidak dipakai payroll) |
 |---|---|---|---|---|
 | 1 | Pembina Utama | IV/E | Guru Besar | 1050 |
 | 2 | Pembina Utama Madya | IV/D | Guru Besar | 850 |
@@ -267,6 +269,8 @@ Diberikan sesuai kehadiran dosen dan karyawan, besaran sesuai ketentuan (nominal
 
 Poin = dirumuskan dari rumus poin faktor (§10a).
 
+> **PENTING — aturan mutual-exclusivity (dikonfirmasi dari baris "Operasional D | Dosen tetap dan karyawan (tanpa jabatan struktural) → Tunjangan Baru = 0")**: Tunjangan Struktural dan Tunjangan Jabatan Karyawan (§8) **saling menggantikan, bukan dijumlahkan**. Pegawai dengan jabatan struktural dapat Tunjangan Struktural dari tabel ini dan Tunjangan Jabatan Karyawan-nya = 0; pegawai tanpa jabatan struktural sebaliknya. Ini divalidasi silang dengan data XLSX §20 (Zulfikar, Ka. UPT Perpustakaan: Tunjangan Struktural terisi, Tunjangan Jabatan/Fungsional kosong).
+
 ## 11. TUNJANGAN TRANSPORTASI (dari DOCX — PDF: "tidak ada perubahan")
 
 | No. | Level Struktur | Jabatan | Tunjangan |
@@ -288,13 +292,25 @@ PDF slide "Tunjangan Jabatan Tendik" menyebutkan "penyesuaian dengan golongan", 
 
 ## 13. BPJS KESEHATAN (dari PDF — "tidak ada perubahan")
 
-Sudah berlaku untuk Tendik dan Dosen dengan **TMT > 1 tahun**. Nominal/skema iuran tidak dirinci di kedua sumber (kemungkinan ikut skema BPJS Kesehatan resmi nasional, bukan tabel internal UA) — **butuh konfirmasi** apakah ini murni komponen potongan (iuran karyawan) atau juga ada porsi tunjangan (iuran perusahaan) yang perlu di-track.
+Sudah berlaku untuk Tendik dan Dosen dengan **TMT > 1 tahun**. Nominal/skema iuran tidak dirinci di kedua sumber UA — TAPI ini persentase yang diatur **Perpres nasional**, bukan keputusan internal UA, jadi bisa dipakai sebagai default terverifikasi (bukan tebakan): **total 5% dari gaji (dibatasi maksimal gaji Rp12.000.000/bulan sebagai dasar hitung)** — 4% ditanggung institusi (tidak masuk komponen potongan gaji pegawai, tapi bagian cost-to-company), 1% dipotong dari gaji pegawai. Sumber: Perpres 82/2018 jo. Perpres 64/2020 jo. Perpres 59/2024, berlaku tanpa perubahan sampai awal 2026.
+
+**Yang tetap perlu dikonfirmasi ke PSDM**: bukan besaran persennya (itu sudah pasti dari regulasi), tapi apakah UA murni ikut skema standar 4%/1% ini atau punya kebijakan tambahan (mis. institusi menanggung porsi karyawan juga sebagai benefit).
 
 ## 14. BPJS KETENAGAKERJAAN (dari PDF — "BELUM REALISASI", disebutkan 2x identik di slide)
 
-Sebelumnya hanya berlaku untuk pegawai tetap Yayasan. **Status: belum direalisasikan** — artinya untuk MVP sistem, field ini **harus ada di skema** (karena XLSX riil sudah punya kolom ini terisi untuk sebagian tendik) tapi belum berlaku universal — perlu flag per-pegawai atau per-kategori, bukan diasumsikan berlaku semua.
+Sebelumnya hanya berlaku untuk pegawai tetap Yayasan. **Status: belum direalisasikan secara institusional** menurut PDF — artinya untuk MVP sistem, field ini **harus ada di skema** (karena XLSX riil sudah punya kolom ini terisi untuk sebagian tendik, jadi kemungkinan sudah mulai jalan parsial di lapangan meski PDF bilang belum) tapi belum berlaku universal — perlu flag per-pegawai atau per-kategori, bukan diasumsikan berlaku semua.
 
-Catatan dari XLSX: kolom "BPJS TK" muncul **2 kali** dalam 1 baris — sekali sebagai bagian komponen pendapatan (biasanya bernilai 0 di data sample) dan sekali lagi sebagai komponen **potongan** (bernilai non-zero, mis. 86.072 dan 40.600 untuk Zulfikar). Kemungkinan: 1 kolom adalah **iuran yang dibayar institusi** (bagian dari CTC, tidak masuk penghasilan diterima) dan 1 kolom lagi **iuran yang dipotong dari gaji karyawan** — dua entitas berbeda meski nama kolom sama, ini rawan tertukar kalau tidak diklarifikasi.
+Tarif resmi nasional 2026 (5 program, tidak semua ditanggung dua arah — bisa dipakai sebagai default terverifikasi menggantikan 0, TAPI tetap tandai `is_confirmed=false` karena yang belum pasti adalah **apakah UA sudah mendaftarkan program ini dan kategori risiko JKK yang dipakai**, bukan persentasenya):
+
+| Program | Institusi | Dipotong dari Gaji |
+|---|---|---|
+| JHT (Jaminan Hari Tua) | 3,7% | 2% |
+| JP (Jaminan Pensiun) | 2% (batas upah beda dari batas BPJS Kesehatan) | 1% |
+| JKK (Jaminan Kecelakaan Kerja) | 0,24%–1,74% (tergantung kategori risiko pekerjaan institusi — perlu tahu kategori mana yang dipakai UA) | 0% (institusi penuh) |
+| JKM (Jaminan Kematian) | 0,3% | 0% (institusi penuh) |
+
+Catatan dari XLSX: kolom "BPJS TK" muncul **2 kali** dalam 1 baris — sekali sebagai bagian komponen pendapatan (biasanya bernilai 0 di data sample) dan sekali lagi sebagai komponen **potongan** (bernilai non-zero, mis. 86.072 dan 40.600 untuk Zulfikar). Ini **konsisten dengan struktur tabel di atas**: kolom potongan = porsi JHT 2% + JP 1% = 3% dari basis upah yang dipotong dari gaji karyawan; kolom pendapatan (yang sering 0) kemungkinan dimaksudkan untuk porsi institusi (4%+2%+JKK+JKM) yang seharusnya jadi bagian cost-to-company/CTC tapi tidak selalu ditampilkan di slip karena bukan uang yang diterima pegawai — masuk akal kenapa sering kosong di data sample.
+
 
 ## 15. TUNJANGAN MAKAN — dari PDF ("tidak ada perubahan")
 
@@ -455,11 +471,16 @@ Berisi daftar rekening tujuan transfer gaji per pegawai (nomor rekening, nama, j
 
 ## 21. Hal yang Perlu Dikonfirmasi ke Yang Mulia (tidak dirinci lengkap di 3 sumber)
 
-1. Nominal Tunjangan Makan per hari/per kehadiran (§6, §15).
+**Sudah terjawab (dari analisis silang dokumen, tidak perlu ditanyakan lagi):**
+- ~~Definisi pasti "BPJS TK" ganda di kolom pendapatan vs potongan~~ — **RESOLVED**: kolom potongan = porsi JHT 2%+JP 1% (3% dari gaji, dipotong dari pegawai); kolom pendapatan yang sering 0 = porsi institusi (4%+2%+JKK+JKM), cost-to-company yang tidak selalu tampil di slip. Lihat §14.
+- ~~Skema/persentase iuran BPJS Kesehatan~~ — **RESOLVED sebagian**: persentasenya sudah pasti dari Perpres nasional (5% total: 4% institusi + 1% potongan gaji, dibatasi gaji maks Rp12 juta), bukan keputusan UA. Yang masih perlu ditanyakan cuma soal kategori risiko JKK dan status pendaftaran resmi (lihat poin 3 di bawah).
+- ~~Tunjangan Jabatan Karyawan §8 kok 0 di sebagian data XLSX~~ — **RESOLVED**: bukan gap, ini mutual-exclusive dengan Tunjangan Struktural (lihat catatan di §10c).
+
+**Masih genuinely perlu dikonfirmasi ke PSDM/Ranti Mustika Putri:**
+1. Nominal Tunjangan Makan per hari/per kehadiran (§6, §15) — tidak ada di 3 sumber sama sekali.
 2. Mekanisme pro-rata Tunjangan Transportasi kalau kehadiran < 26 hari (§11) — linear atau ada threshold minimum.
-3. Skema/persentase iuran BPJS Kesehatan (§13) — apakah ada porsi ditanggung institusi vs dipotong dari gaji.
-4. Definisi pasti "BPJS TK" ganda di kolom pendapatan vs potongan (§14, §20) — perlu klarifikasi 2 entitas ini benar-benar berbeda maksud atau cuma duplikasi kolom di spreadsheet lama.
-5. Mekanisme scoring "penilaian kinerja" yang menentukan persentase pencairan Tunjangan Variabel (§9) — sistem penilaian kinerja itu sendiri belum ada di scope PRD.
-6. Definisi "Gaji Dasar" di formula Lembur (§16) — apakah murni Gaji Pokok atau termasuk komponen lain.
-7. Apa itu "Penyesuaian" dan "Rapel" secara mekanisme (kapan muncul, siapa yang input, apakah manual override atau ada aturan otomatis) — di data XLSX kedua kolom ini kebanyakan kosong/manual.
-8. Definisi lengkap kategori potongan "UJKS", "KKB", "BTN/BNS", "Sosial Bersama", "Lain-lain" — kemungkinan ini potongan pinjaman/koperasi/bank per individu (bukan potongan sistematis seperti Alpha), perlu tahu apakah nominalnya per-pegawai manual input atau ada rumus.
+3. Status pendaftaran resmi BPJS Ketenagakerjaan (§14) — PDF bilang "belum realisasi" tapi data XLSX riil sudah punya nilai terisi untuk sebagian tendik; dan kategori risiko JKK yang dipakai UA (0,24%–1,74%, rentangnya lebar).
+4. Mekanisme scoring "penilaian kinerja" yang menentukan persentase pencairan Tunjangan Variabel (§9) — sistem penilaian kinerja itu sendiri belum ada di scope PRD.
+5. Definisi "Gaji Dasar" di formula Lembur (§16) — apakah murni Gaji Pokok atau termasuk komponen lain. Catatan: UA pakai pembagi 120 jam/bulan sendiri, bukan 173 jam standar Kepmenakertrans — jangan disamakan dengan rumus lembur nasional.
+6. Apa itu "Penyesuaian" dan "Rapel" secara mekanisme (kapan muncul, siapa yang input, apakah manual override atau ada aturan otomatis) — di data XLSX kedua kolom ini kebanyakan kosong/manual, kemungkinan besar memang murni manual override dan tidak perlu formula, tapi baiknya dikonfirmasi eksplisit.
+7. Definisi lengkap kategori potongan "UJKS", "KKB", "BTN/BNS", "Sosial Bersama", "Lain-lain" — kemungkinan ini potongan pinjaman/koperasi/bank per individu (bukan potongan sistematis seperti Alpha), perlu tahu apakah nominalnya per-pegawai manual input atau ada rumus.
